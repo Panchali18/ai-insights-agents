@@ -144,6 +144,19 @@ Key project decisions, newest last. Each entry records what was decided, why, wh
 
 ---
 
+## D13 · Add a critic-and-revise loop, and don't trust the critic's own verdict
+**Date:** 2026-10-10 · **Phase:** 2
+
+**Decision:** After drafting, a separate model call reviews the draft against the quality bar (Q1–Q6), checks each factual claim against the source, flags AI-writing tells and single-vendor sourcing, and returns a verdict. A failing draft is revised once with the critic's instructions and reviewed again. If it still fails, it is marked **Rejected** and kept in the file with the reasons. The code decides pass or fail from the critic's findings (every criterion passes and every claim is supported), not from its stated verdict.
+
+**Why:** This is the first point where the model's output decides what the agent does next, which is what separates an agent from a fixed pipeline. The first real draft relied on one vendor source and had AI-writing tells (an em dash, "earns its keep") that a reviewer would have caught. Models sometimes report "pass" while listing failures, so the stated verdict alone can't be trusted.
+
+**Alternatives considered:** The drafter checking its own work in the same call (cheaper, but it tends to approve itself); unlimited revision rounds (cost and time grow, and drafts drift away from the source).
+
+**Consequence:** One draft now uses up to 5 model calls instead of 2, so the call cap rose from 5 to 8. A run takes longer. Rejected drafts stay visible, so the author can see the gate working rather than just getting fewer drafts. Output files no longer overwrite an earlier run from the same day.
+
+---
+
 ## Open issues
 
 - **AI News (smol.ai) has published nothing since 10 Sep 2026** (see D11). Kept on the list; Hacker News added alongside it (D12).

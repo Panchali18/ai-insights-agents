@@ -2,14 +2,15 @@
 
 Research-to-post AI agent that turns AI news and real practitioner pain points into well-sourced LinkedIn drafts, using a self-critique quality gate, cited claims and a human approval step. No generic AI content.
 
-> **Status: in development.** Phase 1 (collect → rank → draft) is built. The self-critique quality gate, full guardrails, voice and evaluation come in later phases; see the [delivery phases](docs/requirements.md#8-delivery-phases).
+> **Status: in development.** Phase 1 (collect → rank → draft) works. Phase 2's critic-and-revise loop is built and tested with sample data; its first real run is pending. Voice, content pillars and evaluation come later; see the [delivery phases](docs/requirements.md#8-delivery-phases).
 
-## How it works (Phase 1)
+## How it works
 
 1. **Collect:** reads recent items from an approved list of sources ([docs/sources.md](docs/sources.md)). A failing source is logged and skipped, never fatal.
 2. **Rank:** the model labels each item as *News* or *Pain point* and scores it on recency, momentum and relevance, then the top item is chosen.
 3. **Draft:** the agent reads the full article and drafts a post against a six-point quality bar. Anything it can't verify, or that needs the author's own experience, becomes a question for the author instead of a guess.
-4. **Save:** one dated Markdown file in `drafts/`, with each draft's status, scores, sources and a run summary.
+4. **Critique and revise:** a separate model call reviews the draft against the quality bar, checks each claim against the source, and flags AI-writing tells and single-vendor sourcing. The review decides what happens next: pass, revise once, or reject. The code reads the critic's findings rather than trusting its stated verdict.
+5. **Save:** one dated Markdown file in `drafts/`, with each draft's status, scores, sources, the critic's review and a run summary.
 
 The agent cannot post anywhere. A human reviews every draft.
 

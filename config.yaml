@@ -4,11 +4,12 @@ model:
   provider: gemini                # swappable provider (US-7.2)
   name: gemini-flash-latest       # alias for the current Flash model; pin an exact version once stable
   api_key_env: GEMINI_API_KEY     # name of the environment variable holding the key
-  max_calls_per_run: 5            # hard cap on model calls per run (G7)
+  max_calls_per_run: 8            # hard cap on model calls per run (G7); 1 draft uses up to 5
   timeout_seconds: 180            # give up on a model call after this long
 
 run:
   drafts_per_run: 1               # start with 1; raise after testing
+  max_revisions: 1                # critic sends a draft back at most this many times, then rejects
   lookback_days: 7                # only items published in the last N days (US-1.1 AC2)
   max_items_per_source: 15        # stops one busy feed crowding out the others
   stale_after_days: 21            # warn when a source's newest item is older than this

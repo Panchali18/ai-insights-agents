@@ -28,6 +28,43 @@ def needs_input(draft_text: str) -> bool:
     return match.group(1).strip().lower().rstrip(".") not in ("none", "")
 
 
+def status_for(post) -> str:
+    if post.outcome == "rejected":
+        return "Rejected by the quality gate (see the review below; kept for transparency)"
+    if post.outcome == "unreviewed":
+        return "Not reviewed by the quality gate (see the review notes below)"
+    return "Needs your input" if needs_input(post.text) else "Ready for review"
+
+
+def review_report(post) -> list:
+    """The critic's findings on the final version, so the author sees why a draft passed or failed."""
+    lines = ["### Quality gate review", ""]
+    lines.append(f"- Outcome: **{post.outcome}** after {post.revisions} revision(s)")
+    if post.note:
+        lines.append(f"- Note: {post.note}")
+    if not post.reviews:
+        return lines + [""]
+
+    final = post.reviews[-1]
+    lines += ["", "| Criterion | Result | Reason |", "|---|---|---|"]
+    for key in ("Q1", "Q2", "Q3", "Q4", "Q5", "Q6"):
+        verdict = final.get("criteria", {}).get(key, {})
+        mark = "✅" if verdict.get("pass") is True else "❌"
+        reason = str(verdict.get("reason", "")).replace("|", "/").replace("\n", " ")
+        lines.append(f"| {key} | {mark} | {reason} |")
+
+    claims = final.get("claims", [])
+    unsupported = [c.get("claim", "") for c in claims if c.get("supported") is not True]
+    lines += ["", f"- Claims checked: {len(claims)}, unsupported: {len(unsupported)}"]
+    lines += [f"  - Unsupported: {claim}" for claim in unsupported]
+    if final.get("single_vendor_source"):
+        lines.append("- ⚠ Single-vendor source: the only source is a company writing about its own products.")
+    if post.outcome == "rejected":
+        lines.append("- What still needed fixing:")
+        lines += [f"  - {line}" for line in final.get("revision_instructions", [])]
+    return lines + [""]
+
+
 def source_report(result) -> list:
     lines = ["## Run summary", ""]
     lines.append(f"- Items collected: {len(result.items)}")
@@ -84,7 +121,7 @@ def main():
         raise SystemExit("No recent items collected, so there is nothing to draft.")
 
     from agent.llm import LLM
-    from agent.steps import draft, rank
+    from agent.steps import rank, write_post
 
     llm = LLM(config["model"])
     items = sorted(result.items, key=lambda i: i.published, reverse=True)[: run["max_items_to_rank"]]
@@ -96,26 +133,30 @@ def main():
 
     sections = []
     for number, (item, scores) in enumerate(selected, start=1):
-        print(f"Drafting: {item.title}")
-        text, grounded = draft(llm, item)
-        status = "Needs your input" if needs_input(text) else "Ready for review"
+        print(f"Drafting and reviewing: {item.title}")
+        post = write_post(llm, item, run.get("max_revisions", 1))
+        print(f"  Quality gate: {post.outcome} after {post.revisions} revision(s)")
         sections += [
             f"## Draft {number}: {item.title}",
             "",
-            f"**Status:** {status}  ",
+            f"**Status:** {status_for(post)}  ",
             f"**Label:** {scores.get('label', '?')} · **Scores:** recency {scores.get('recency')}, "
             f"momentum {scores.get('momentum')}, relevance {scores.get('relevance')}  ",
             f"**Why this topic:** {scores.get('reason', '')}  ",
-            f"**Grounded on:** {'full article' if grounded else 'feed summary only (article page could not be read)'}",
+            f"**Grounded on:** {'full article' if post.grounded_on_article else 'feed summary only (article page could not be read)'}",
             "",
-            text.strip(),
+            post.text.strip(),
             "",
-        ]
+        ] + review_report(post)
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     output_dir = ROOT / run["output_dir"]
     output_dir.mkdir(exist_ok=True)
     output_file = output_dir / f"{today}.md"
+    run_number = 2
+    while output_file.exists():  # never overwrite an earlier run from the same day
+        output_file = output_dir / f"{today}-{run_number}.md"
+        run_number += 1
 
     header = [
         f"# Drafts for {today}",
