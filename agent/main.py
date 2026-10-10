@@ -31,7 +31,9 @@ def needs_input(draft_text: str) -> bool:
 def source_report(result) -> list:
     lines = ["## Run summary", ""]
     lines.append(f"- Items collected: {len(result.items)}")
-    read = ", ".join(f"{name} ({kept} items)" for name, kept in result.ok_sources)
+    read = ", ".join(
+        f"{name} ({kept} item{'' if kept == 1 else 's'})" for name, kept in result.ok_sources
+    )
     lines.append(f"- Sources read: {read or 'none'}")
     if result.failed_sources:
         lines.append("- Sources failed (skipped):")
