@@ -120,7 +120,18 @@ Key project decisions, newest last. Each entry records what was decided, why, wh
 
 ---
 
+## D11 · Sort feeds by date before capping, and warn on stale sources
+**Date:** 2026-10-10 · **Phase:** 1
+
+**Decision:** Sort each feed's entries newest first before applying the per-source cap. Flag any reachable source whose newest item is older than 21 days (configurable per source; 90 days for the Carnegie Mellon blog, which posts about monthly).
+
+**Why:** AI News (smol.ai) returned 0 items in both runs. The feed worked; the newsletter's newest issue was dated 10 Sep 2026, a month earlier, and no pause had been announced. The investigation found two more problems: the feed lists issues oldest first, and two different issues shared an identical timestamp. With an oldest-first feed, the cap from D8 would have kept the oldest recent items and dropped the newest.
+
+**Consequence:** A source that goes quiet now shows a ⚠ warning in the terminal and the run summary, instead of a silent 0. The community signal from D5 is weaker until AI News resumes or is replaced. Lesson: "0 items" can mean the code is broken, the source is broken, or the source has stopped; each needs a different fix, so the run should say which.
+
+---
+
 ## Open issues
 
-- **AI News (smol.ai) returned 0 recent items** in both runs on 10 Oct 2026, though it publishes on weekdays. To investigate.
+- **AI News (smol.ai) has published nothing since 10 Sep 2026** (see D11). Decide whether to wait or replace it as the community source.
 - **The first draft relied on a single vendor source** (Microsoft writing about its own products). Phase 2 should flag single-vendor drafts and look for an independent view.

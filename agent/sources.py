@@ -28,6 +28,7 @@ class CollectionResult:
     items: list = field(default_factory=list)
     ok_sources: list = field(default_factory=list)
     failed_sources: list = field(default_factory=list)  # (name, reason)
+    stale_sources: list = field(default_factory=list)  # (name, date of newest item)
 
 
 def clean_text(raw: str, limit: int) -> str:
@@ -46,11 +47,17 @@ def _entry_date(entry):
     return None
 
 
-def collect(sources: list, lookback_days: int, max_per_source: int = 15) -> CollectionResult:
+def collect(
+    sources: list, lookback_days: int, max_per_source: int = 15, stale_after_days: int = 21
+) -> CollectionResult:
     """Read every source. A failing source is logged and skipped, never fatal.
-    Each source contributes at most max_per_source items, so one busy feed can't crowd out the rest."""
+    Each source contributes at most max_per_source items (newest first), so one busy feed
+    can't crowd out the rest. A source whose newest item is older than stale_after_days is
+    flagged as stale: it is reachable but appears to have stopped publishing."""
     result = CollectionResult()
-    cutoff = datetime.now(timezone.utc) - timedelta(days=lookback_days)
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(days=lookback_days)
+    oldest = datetime.min.replace(tzinfo=timezone.utc)
     seen_urls = set()
 
     for source in sources:
@@ -67,8 +74,15 @@ def collect(sources: list, lookback_days: int, max_per_source: int = 15) -> Coll
             result.failed_sources.append((name, str(error)[:150]))
             continue
 
+        # Feeds don't all list newest first, so sort by date before applying the cap.
+        entries = sorted(feed.entries, key=lambda e: _entry_date(e) or oldest, reverse=True)
+        newest = _entry_date(entries[0])
+        stale_cutoff = now - timedelta(days=source.get("stale_after_days", stale_after_days))
+        if newest and newest < stale_cutoff:
+            result.stale_sources.append((name, newest.strftime("%Y-%m-%d")))
+
         kept = 0
-        for entry in feed.entries:
+        for entry in entries:
             if kept >= max_per_source:
                 break
             published = _entry_date(entry)

@@ -40,6 +40,9 @@ def source_report(result) -> list:
         lines += [f"  - {name}: {reason}" for name, reason in result.failed_sources]
     else:
         lines.append("- Sources failed: none")
+    if result.stale_sources:
+        lines.append("- Sources that seem to have stopped publishing (check whether to replace them):")
+        lines += [f"  - {name}: newest item {date}" for name, date in result.stale_sources]
     return lines
 
 
@@ -61,11 +64,18 @@ def main():
         return
 
     print("Collecting from sources...")
-    result = collect(config["sources"], run["lookback_days"], run.get("max_items_per_source", 15))
+    result = collect(
+        config["sources"],
+        run["lookback_days"],
+        run.get("max_items_per_source", 15),
+        run.get("stale_after_days", 21),
+    )
     for name, kept in result.ok_sources:
         print(f"  ✓ {name}: {kept} recent item{'' if kept == 1 else 's'}")
     for name, reason in result.failed_sources:
         print(f"  ✗ {name}: skipped ({reason})")
+    for name, date in result.stale_sources:
+        print(f"  ⚠ {name}: may have stopped publishing (newest item {date})")
 
     if args.dry_run:
         print(f"\nDry run finished: {len(result.items)} items collected. No model calls made.")
