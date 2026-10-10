@@ -1,0 +1,35 @@
+# Agent configuration. Change behaviour here, not in the code.
+
+model:
+  provider: gemini                # swappable provider (US-7.2)
+  name: gemini-2.5-flash-lite     # any model available on your Gemini free tier
+  api_key_env: GEMINI_API_KEY     # name of the environment variable holding the key
+  max_calls_per_run: 5            # hard cap on model calls per run (G7)
+
+run:
+  drafts_per_run: 1               # start with 1; raise after testing
+  lookback_days: 7                # only items published in the last N days (US-1.1 AC2)
+  max_items_to_rank: 60           # most recent items sent to the ranking step
+  output_dir: drafts
+
+# Phase 1 uses only the sources marked ✅ in docs/sources.md.
+# The rest are added and tested in later phases.
+sources:
+  - name: OpenAI news
+    group: Labs
+    url: https://openai.com/news/rss.xml
+  - name: Google DeepMind blog
+    group: Labs
+    url: https://deepmind.google/blog/feed
+  - name: Microsoft Foundry blog
+    group: Microsoft
+    url: https://devblogs.microsoft.com/foundry/feed/
+  - name: AI News (smol.ai)
+    group: Community
+    url: https://news.smol.ai/rss.xml
+  - name: AI Incident Database
+    group: Community
+    url: https://incidentdatabase.ai/rss.xml
+  - name: Carnegie Mellon ML blog
+    group: Research
+    url: https://blog.ml.cmu.edu/feed/
