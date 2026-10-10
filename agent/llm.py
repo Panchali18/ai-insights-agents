@@ -29,6 +29,15 @@ class LLM:
         else:
             raise SystemExit(f"Provider '{self.provider}' is not supported yet.")
 
+    def list_models(self) -> list:
+        """Names of the models this key can use for text generation (no generation call is made)."""
+        names = []
+        for model in self._client.models.list():
+            actions = getattr(model, "supported_actions", None) or []
+            if not actions or "generateContent" in actions:
+                names.append(model.name.removeprefix("models/"))
+        return sorted(names)
+
     def generate(self, prompt: str, want_json: bool = False) -> str:
         """Send one prompt to the model and return its text reply."""
         if self.calls_made >= self.max_calls:
@@ -52,7 +61,8 @@ class LLM:
             if "404" in message or "not found" in message.lower():
                 raise SystemExit(
                     f"Model '{self.model_name}' isn't available on your key. "
-                    "Change model.name in config.yaml to a model listed in Google AI Studio."
+                    "Run `python -m agent.main --list-models` and put one of the listed names "
+                    f"in model.name in config.yaml.\nDetails: {message[:300]}"
                 ) from error
             raise
         return response.text or ""

@@ -3,6 +3,7 @@
 Usage:
     python -m agent.main            # full run (uses the model)
     python -m agent.main --dry-run  # only check the sources; no model calls
+    python -m agent.main --list-models  # show which models your key can use
 """
 
 import argparse
@@ -43,10 +44,19 @@ def source_report(result) -> list:
 def main():
     parser = argparse.ArgumentParser(description="AI Insights Agent")
     parser.add_argument("--dry-run", action="store_true", help="check sources only, no model calls")
+    parser.add_argument("--list-models", action="store_true", help="list models your API key can use")
     args = parser.parse_args()
 
     config = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8"))
     run = config["run"]
+
+    if args.list_models:
+        from agent.llm import LLM
+
+        print("Models your key can use for text generation:")
+        for name in LLM(config["model"]).list_models():
+            print(f"  {name}")
+        return
 
     print("Collecting from sources...")
     result = collect(config["sources"], run["lookback_days"], run.get("max_items_per_source", 15))
