@@ -2,7 +2,7 @@
 
 model:
   provider: gemini                # swappable provider (US-7.2)
-  name: gemini-2.5-flash-lite     # any model available on your Gemini free tier
+  name: gemini-flash-latest       # alias for the current Flash model; pin an exact version once stable
   api_key_env: GEMINI_API_KEY     # name of the environment variable holding the key
   max_calls_per_run: 5            # hard cap on model calls per run (G7)
 
