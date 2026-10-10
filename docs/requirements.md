@@ -1,10 +1,12 @@
 # Requirements: AI Insights Agent
 
-**Status:** Draft v0.2 · **Owner:** Panchali Das · **Last updated:** 2026-10-10
+**Status:** Draft v0.3 · **Owner:** Panchali Das · **Last updated:** 2026-10-10
 
 ## 1. Purpose
 
 An agent that researches current AI developments and the problems practitioners still struggle with, then drafts LinkedIn posts for human review. Each post must teach the reader something or show the author's hands-on ability. Generic AI commentary is out of scope by design.
+
+Posts are balanced across four content pillars (Epic 9), so that the author's profile shows hands-on building and business understanding, not just reactions to news.
 
 ## 2. Scope
 
@@ -13,6 +15,7 @@ An agent that researches current AI developments and the problems practitioners 
 - Citing a curated reference library of reports, standards and data ([reference-library.md](reference-library.md))
 - Ranking items by relevance and value
 - Drafting posts with cited sources
+- Drafting across four content pillars and tracking the balance between them
 - A self-critique quality gate before drafts reach the author
 - Questions for the author whenever the agent is unsure
 - A weekly scheduled run producing one Markdown drafts file
@@ -120,6 +123,40 @@ An agent that researches current AI developments and the problems practitioners 
 - AC2: Each run records quality scores against Q1–Q6.
 - AC3: Results are kept so that runs can be compared.
 
+### Epic 9: Content pillars
+
+Every draft belongs to one of four pillars. The starting mix is a target to review after the first month, not a fixed rule.
+
+| Pillar | What it covers | Draws on | Target mix |
+|---|---|---|---|
+| **Building in public** | Lessons, decisions and failures from building the author's AI projects | The repo's decision log and commit history | ~40% |
+| **Explainers** | AI concepts explained for business readers | The reference library and sources | ~25% |
+| **Enterprise reality** | What makes AI work or fail inside organisations, kept general | The author's answers to the agent's questions | ~20% |
+| **News with a take** | A current development and what it means | The weekly sources (Epics 1–3) | ~15% |
+
+**US-9.1** As the author, I want every draft tagged with its pillar, so that I can see what kind of post it is at a glance.
+- AC1: Each draft shows exactly one pillar.
+- AC2: The pillar is shown next to the draft's status.
+
+**US-9.2** As the author, I want the agent to suggest the pillar I've neglected, so that my profile stays balanced.
+- AC1: The author records published posts and their pillars in a posting log in the repo.
+- AC2: Each run compares the log's last 8 posts against the target mix and names the most under-represented pillar.
+- AC3: When drafts per run is 1, the draft comes from the most under-represented pillar unless no suitable material exists, in which case the run summary says so.
+
+**US-9.3** As the author, I want "building in public" drafts based on my real project work, so that posts prove hands-on ability.
+- AC1: The agent reads the repo's decision log and recent commit history as source material.
+- AC2: Each draft names the specific decision, problem or result it is based on, with a link to the commit or decision entry.
+- AC3: The agent never describes work as done unless the log or commits show it is done.
+
+**US-9.4** As the author, I want explainer drafts built from the reference library, so that I can teach a concept without needing this week's news.
+- AC1: Explainer drafts cite at least one reference-library entry, following US-1.3.
+- AC2: Explainers are written for a business reader: no unexplained jargon, and one concrete business example.
+
+**US-9.5** As the author, I want "enterprise reality" drafts to start from my experience, so that they are credible and never confidential.
+- AC1: The agent proposes a theme and asks the author up to three questions before drafting.
+- AC2: The draft uses only what the author supplies in answer, generalised so that no employer, client, system or colleague can be identified (guardrail G5).
+- AC3: If the author hasn't answered, the draft stays at **Needs your input** and no experience is invented.
+
 ## 5. Guardrails and non-functional requirements
 
 | ID | Requirement |
@@ -139,6 +176,8 @@ An agent that researches current AI developments and the problems practitioners 
 - Free-tier requests may be used by Google to improve its products, which is acceptable because only public information is sent (see G5).
 - The chosen sources offer RSS feeds or pages that can be fetched without signing in.
 - The author reviews drafts weekly and supplies input for questions.
+- The author keeps the posting log up to date after publishing (needed for US-9.2).
+- Project decisions are recorded in a decision log in the repo (needed for US-9.3).
 
 ## 7. Open questions
 
@@ -147,7 +186,9 @@ An agent that researches current AI developments and the problems practitioners 
 3. ~~How many drafts per weekly run are useful: 2, 3 or 5?~~ **Resolved 10 Oct 2026:** start with 1 draft per run, test, then tune.
 4. Which sample posts will the style guide be built from?
 5. How will the author record feedback on drafts: edits in the file, or a short rating?
-6. Should post performance (likes, comments) be logged manually to inform ranking later?
+6. Should post performance (likes, comments) be logged manually to inform ranking later? If so, it belongs in the posting log (US-9.2).
+7. Is the target pillar mix right, and should it be reviewed after the first 8 posts?
+8. Which of the author's projects can "building in public" posts draw on: this agent only, or the JD Analyzer too?
 
 ## 8. Delivery phases
 
@@ -156,6 +197,7 @@ An agent that researches current AI developments and the problems practitioners 
 | 1. Minimum working version | Collect, rank, draft one post to Markdown | US-1.1, US-1.4, US-2.1, US-3.1, US-7.2 |
 | 2. Quality gate and guardrails | Critic step, claim checks, questions for the author, reference library | US-1.3, US-4.1, US-4.2, US-5.1, G1–G7 |
 | 3. Voice | Style guide from samples | US-6.1, US-5.2 |
-| 4. Evaluation | Test set and quality scores | US-8.1 |
-| 5. Automation | Weekly scheduled runs | US-7.1 |
-| 6. Polish | README, architecture diagram, demo | — |
+| 4. Content pillars | Pillar tags, posting log, balance suggestions, build-log, explainer and enterprise drafts | US-9.1–US-9.5 |
+| 5. Evaluation | Test set and quality scores | US-8.1 |
+| 6. Automation | Weekly scheduled runs | US-7.1 |
+| 7. Polish | README, architecture diagram, demo | — |
