@@ -29,7 +29,7 @@ Everything about how this project was built, in one place. The agent reads this 
 | 18 | 2026-10-10 | Ran with 47 items to rank | The ranking call appeared to hang; added a time limit and per-call timings | D14 |
 | 19 | 2026-10-10 | Built Phase 2's critic-and-revise loop | Tested with sample data, including a critic that says "pass" while listing failures | D13 |
 | 20 | 2026-10-10 | Saw the earlier ranking call's result | Google returned `504 DEADLINE_EXCEEDED` after silent retries; added a fallback model | D14 |
-| 21 | 2026-10-10 | First real run of Phase 2 | Pending | — |
+| 21 | 2026-10-10 | First real run of Phase 2 | Worked end to end. Picked "OpenAI withdraws three mathematical results"; the critic failed the first draft, it was revised once, then passed. 5 model calls, about 10 minutes in total, of which ranking took 319 seconds | D13 |
 
 ---
 
