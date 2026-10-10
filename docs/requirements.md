@@ -60,7 +60,7 @@ An agent that researches current AI developments and the problems practitioners 
 
 **US-2.1** As the author, I want items ranked by relevance and value, so that I only see topics worth writing about.
 - AC1: Each item is scored on recency, momentum (number of sources covering it) and relevance to the defined topic areas.
-- AC2: The top items (default: 3–5) go forward to drafting.
+- AC2: The top-ranked item goes forward to drafting. The number of drafts per run is a configuration setting (default: 1), to be raised after testing.
 - AC3: The score and a one-line reason are shown for each selected item.
 
 ### Epic 3: Drafting
@@ -144,7 +144,7 @@ An agent that researches current AI developments and the problems practitioners 
 
 1. ~~Which sources go on the initial approved list?~~ **Resolved 10 Oct 2026:** 23 sources approved; see [sources.md](sources.md).
 2. Which topic areas should ranking favour, if any, given the broad AI scope?
-3. How many drafts per weekly run are useful: 2, 3 or 5?
+3. ~~How many drafts per weekly run are useful: 2, 3 or 5?~~ **Resolved 10 Oct 2026:** start with 1 draft per run, test, then tune.
 4. Which sample posts will the style guide be built from?
 5. How will the author record feedback on drafts: edits in the file, or a short rating?
 6. Should post performance (likes, comments) be logged manually to inform ranking later?
