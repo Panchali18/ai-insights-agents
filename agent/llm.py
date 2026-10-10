@@ -13,6 +13,7 @@ class LLM:
         self.provider = model_config["provider"]
         self.model_name = model_config["name"]
         self.max_calls = model_config.get("max_calls_per_run", 5)
+        self.timeout_seconds = model_config.get("timeout_seconds", 180)
         self.calls_made = 0
 
         api_key = os.environ.get(model_config["api_key_env"])
@@ -24,8 +25,12 @@ class LLM:
 
         if self.provider == "gemini":
             from google import genai
+            from google.genai import types
 
-            self._client = genai.Client(api_key=api_key)
+            self._client = genai.Client(
+                api_key=api_key,
+                http_options=types.HttpOptions(timeout=self.timeout_seconds * 1000),
+            )
         else:
             raise SystemExit(f"Provider '{self.provider}' is not supported yet.")
 
@@ -50,12 +55,20 @@ class LLM:
             temperature=0.4,
             response_mime_type="application/json" if want_json else "text/plain",
         )
+        import time
+
+        started = time.monotonic()
         try:
             response = self._client.models.generate_content(
                 model=self.model_name, contents=prompt, config=config
             )
         except Exception as error:  # noqa: BLE001
             message = str(error)
+            if "timed out" in message.lower() or "timeout" in type(error).__name__.lower():
+                raise SystemExit(
+                    f"The model didn't answer within {self.timeout_seconds} seconds. Try again, "
+                    "or raise model.timeout_seconds in config.yaml."
+                ) from error
             if "429" in message or "RESOURCE_EXHAUSTED" in message:
                 raise SystemExit("Gemini free-tier limit reached. Try again later.") from error
             if "404" in message or "not found" in message.lower():
@@ -65,4 +78,5 @@ class LLM:
                     f"in model.name in config.yaml.\nDetails: {message[:300]}"
                 ) from error
             raise
+        print(f"  (model answered in {time.monotonic() - started:.0f}s)")
         return response.text or ""
