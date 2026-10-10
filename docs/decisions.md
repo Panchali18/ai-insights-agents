@@ -203,5 +203,7 @@ Everything about how this project was built, in one place. The agent reads this 
 
 ## Open issues
 
+- **The critic passed a draft it should have flagged** (run 2 on 10 Oct 2026, "OpenAI withdraws three mathematical results"). Found on human review: the only source was a single post on X, labelled "full article" though X pages mostly block automated readers; the post stated the agent's own inferences about OpenAI's practice as fact; and several AI-writing tells got through. Proposed fixes, not yet made: (1) a framing check in the critic, including criticism of named companies (G4); (2) flag any single-source draft and treat social posts as needing confirmation; (3) detect login walls and very short pages, and label the draft "feed summary only"; (4) use the author's writing rules as the critic's Q6 checklist and the drafter's style guide; (5) use Flash-Lite for ranking, which took 319 seconds.
+
 - **AI News (smol.ai) has published nothing since 10 Sep 2026** (see D11). Kept on the list; Hacker News added alongside it (D12).
 - **The first draft relied on a single vendor source** (Microsoft writing about its own products). Phase 2 should flag single-vendor drafts and look for an independent view.
