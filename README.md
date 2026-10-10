@@ -46,6 +46,6 @@ python -m agent.main             # full run; writes drafts/<date>.md
 - [Requirements](docs/requirements.md): user stories, acceptance criteria, guardrails and phases
 - [Sources](docs/sources.md): the approved sources, exclusions and research findings
 - [Reference library](docs/reference-library.md): reports and standards drafts can cite
-- [Decision log](docs/decisions.md): key decisions, why they were made and what they changed
+- [Build timeline and decision log](docs/decisions.md): every build step in order, and the reasoning behind each decision
 
 Built with Claude.

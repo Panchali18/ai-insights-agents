@@ -1,8 +1,39 @@
-# Decision log
+# Build timeline and decision log
 
-Key project decisions, newest last. Each entry records what was decided, why, what else was considered, and what it changed. The agent reads this file as source material for "building in public" posts (US-9.3), so entries describe only what has actually happened.
+Everything about how this project was built, in one place. The agent reads this file as source material for "building in public" posts (US-9.3), so it records only what has actually happened.
+
+- **Build timeline:** each step in order, what was done and what happened. One line per step.
+- **Decision log:** the detail behind each decision (why, alternatives, consequences). The timeline links to it by number (D1, D2…) instead of repeating it.
+
+## Build timeline
+
+| # | Date | What we did | What happened | Decision |
+|---|---|---|---|---|
+| 1 | 2026-10-10 | Defined the agent: research AI news and pain points, draft LinkedIn posts for human review | Agreed a six-point quality bar and the rule that the agent asks when unsure | D4 |
+| 2 | 2026-10-10 | Chose how to build it | Code in a public repo, so the design is visible, over a chat-app configuration | D1 |
+| 3 | 2026-10-10 | Checked the Claude API for free use | No starter credit on the account; AWS Bedrock access was still pending for another project | D2 |
+| 4 | 2026-10-10 | Chose Gemini's free tier to run the agent, with Claude to build it | Model kept swappable in config | D2 |
+| 5 | 2026-10-10 | Created the GitHub repo (public, MIT licence) | Repo live with README, licence and Python .gitignore | — |
+| 6 | 2026-10-10 | Stored the Gemini key as a Codespaces secret | First attempt rejected: secret names allow only letters, numbers and underscores. Saved as `GEMINI_API_KEY` | — |
+| 7 | 2026-10-10 | Wrote requirements v0.1 | 8 epics with user stories, acceptance criteria, guardrails and phases | — |
+| 8 | 2026-10-10 | Researched sources and five comparable public agents | Found Reddit is ending its RSS feeds on 13 Nov 2026; approved 23 sources and a reference library | D5, D6 |
+| 9 | 2026-10-10 | Set the run to produce 1 draft | Kept as a setting to raise later | D7 |
+| 10 | 2026-10-10 | Built Phase 1: collect, rank, draft, save | Tested end to end with sample data and a stand-in model | — |
+| 11 | 2026-10-10 | Confirmed GitHub budgets | $0 budgets with stop usage on every product, no payment method, so the project can't incur charges | — |
+| 12 | 2026-10-10 | First dry run from the codespace | All 6 sources reachable; 73 items, 56 of them from the AI Incident Database | D8 |
+| 13 | 2026-10-10 | First full run on `gemini-2.5-flash-lite` | Failed with "model not available", though the model was on the key's list: the error message was hiding the real cause | D9 |
+| 14 | 2026-10-10 | Switched to `gemini-flash-latest` and ran again | First real draft: Azure document extraction. Reviewed at about 7/10; it relied on one vendor source and had AI-writing tells | D13 |
+| 15 | 2026-10-10 | Stepped back on content strategy | Added four content pillars (Epic 9) and started this log | D10 |
+| 16 | 2026-10-10 | Investigated why AI News returned 0 items | It stopped publishing after 10 Sep 2026; also found its feed is oldest-first, which exposed a bug in the per-source cap | D11 |
+| 17 | 2026-10-10 | Added Hacker News as a second community source | 15 popular AI stories per run; AI News kept with a stale warning | D12 |
+| 18 | 2026-10-10 | Ran with 47 items to rank | The ranking call appeared to hang; added a time limit and per-call timings | D14 |
+| 19 | 2026-10-10 | Built Phase 2's critic-and-revise loop | Tested with sample data, including a critic that says "pass" while listing failures | D13 |
+| 20 | 2026-10-10 | Saw the earlier ranking call's result | Google returned `504 DEADLINE_EXCEEDED` after silent retries; added a fallback model | D14 |
+| 21 | 2026-10-10 | First real run of Phase 2 | Pending | — |
 
 ---
+
+# Decision log
 
 ## D1 · Build the agent in code, not as a chat-app configuration
 **Date:** 2026-10-10 · **Phase:** Planning
