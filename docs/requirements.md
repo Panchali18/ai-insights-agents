@@ -1,6 +1,6 @@
 # Requirements: AI Insights Agent
 
-**Status:** Draft v0.1 · **Owner:** Panchali Das · **Last updated:** 2026-10-10
+**Status:** Draft v0.2 · **Owner:** Panchali Das · **Last updated:** 2026-10-10
 
 ## 1. Purpose
 
@@ -9,7 +9,8 @@ An agent that researches current AI developments and the problems practitioners 
 ## 2. Scope
 
 **In scope**
-- Collecting items from a fixed list of trusted sources
+- Collecting items from a fixed list of trusted sources ([sources.md](sources.md))
+- Citing a curated reference library of reports, standards and data ([reference-library.md](reference-library.md))
 - Ranking items by relevance and value
 - Drafting posts with cited sources
 - A self-critique quality gate before drafts reach the author
@@ -45,6 +46,15 @@ An agent that researches current AI developments and the problems practitioners 
 **US-1.2** As the author, I want the agent to collect practitioner pain points as well as news, so that posts address problems people actually face.
 - AC1: The source list includes at least one practitioner channel (for example, forums or framework issue trackers).
 - AC2: Each item is labelled **News** or **Pain point**.
+
+**US-1.3** As the author, I want drafts to draw on a curated reference library, so that posts are grounded in data and standards, not just this week's news.
+- AC1: Reference entries come only from the reference library file.
+- AC2: A draft citing an entry states its publisher and date.
+- AC3: An entry's caveat is either included in the draft or the entry is not used.
+
+**US-1.4** As the author, I want a failing source to be skipped, so that one broken feed doesn't stop the weekly run.
+- AC1: A source that fails or times out is logged and skipped.
+- AC2: The run summary lists which sources failed.
 
 ### Epic 2: Ranking
 
@@ -132,7 +142,7 @@ An agent that researches current AI developments and the problems practitioners 
 
 ## 7. Open questions
 
-1. Which sources go on the initial approved list?
+1. ~~Which sources go on the initial approved list?~~ **Resolved 10 Oct 2026:** 23 sources approved; see [sources.md](sources.md).
 2. Which topic areas should ranking favour, if any, given the broad AI scope?
 3. How many drafts per weekly run are useful: 2, 3 or 5?
 4. Which sample posts will the style guide be built from?
@@ -143,8 +153,8 @@ An agent that researches current AI developments and the problems practitioners 
 
 | Phase | Delivers | Stories |
 |---|---|---|
-| 1. Minimum working version | Collect, rank, draft one post to Markdown | US-1.1, US-2.1, US-3.1, US-7.2 |
-| 2. Quality gate and guardrails | Critic step, claim checks, questions for the author | US-4.1, US-4.2, US-5.1, G1–G7 |
+| 1. Minimum working version | Collect, rank, draft one post to Markdown | US-1.1, US-1.4, US-2.1, US-3.1, US-7.2 |
+| 2. Quality gate and guardrails | Critic step, claim checks, questions for the author, reference library | US-1.3, US-4.1, US-4.2, US-5.1, G1–G7 |
 | 3. Voice | Style guide from samples | US-6.1, US-5.2 |
 | 4. Evaluation | Test set and quality scores | US-8.1 |
 | 5. Automation | Weekly scheduled runs | US-7.1 |
