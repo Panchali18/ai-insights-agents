@@ -131,7 +131,20 @@ Key project decisions, newest last. Each entry records what was decided, why, wh
 
 ---
 
+## D12 · Add Hacker News as a second community source, and keep AI News
+**Date:** 2026-10-10 · **Phase:** 1
+
+**Decision:** Add Hacker News through its free Algolia search API (no key). Each run searches for stories from the lookback window with at least 50 points, matching any of: LLM, AI agent, RAG, OpenAI, Anthropic, Gemini. Stories are ranked by number of comments before the per-source cap. AI News stays on the list.
+
+**Why:** AI News went quiet (D11), leaving the agent with little community signal. Hacker News is very active and its discussions show what practitioners struggle with. Sorting by comments favours debated topics, which tend to be pain points, over simple announcements.
+
+**Alternatives considered:** Waiting for AI News to resume; the hnrss.org feed service (a third-party wrapper around the same data).
+
+**Consequence:** Hacker News items have no article summary, only the title, points and comment count, so ranking relies on the title. Ask HN posts link to the discussion itself. If AI News resumes, the stale warning (D11) disappears and both sources contribute.
+
+---
+
 ## Open issues
 
-- **AI News (smol.ai) has published nothing since 10 Sep 2026** (see D11). Decide whether to wait or replace it as the community source.
+- **AI News (smol.ai) has published nothing since 10 Sep 2026** (see D11). Kept on the list; Hacker News added alongside it (D12).
 - **The first draft relied on a single vendor source** (Microsoft writing about its own products). Phase 2 should flag single-vendor drafts and look for an independent view.

@@ -14,7 +14,7 @@ run:
   max_items_to_rank: 60           # most recent items sent to the ranking step
   output_dir: drafts
 
-# Phase 1 uses only the sources marked ✅ in docs/sources.md.
+# Phase 1 uses the sources marked ✅ in docs/sources.md, plus Hacker News.
 # The rest are added and tested in later phases.
 sources:
   - name: OpenAI news
@@ -28,7 +28,12 @@ sources:
     url: https://devblogs.microsoft.com/foundry/feed/
   - name: AI News (smol.ai)
     group: Community
-    url: https://news.smol.ai/rss.xml
+    url: https://news.smol.ai/rss.xml   # quiet since 10 Sep 2026; kept so it's picked up if it resumes
+  - name: Hacker News
+    group: Community
+    type: hn_search                     # free Algolia search API, no key
+    min_points: 50                      # only stories the community upvoted
+    queries: [LLM, AI agent, RAG, OpenAI, Anthropic, Gemini]
   - name: AI Incident Database
     group: Community
     url: https://incidentdatabase.ai/rss.xml

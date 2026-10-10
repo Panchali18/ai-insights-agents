@@ -34,7 +34,7 @@ The approved list of sources the agent reads each week, how it reads each one, a
 | Source | Access | Address | Status |
 |---|---|---|---|
 | AI News (smol.ai): summarises top AI Discord servers, subreddits and X accounts | RSS | https://news.smol.ai/rss.xml | ⚠️ Feed works, but no new issue since 10 Sep 2026 (see [decision D11](decisions.md)) |
-| Hacker News: high-scoring AI posts | Free search API | https://hn.algolia.com/api/v1/search | 📋 |
+| Hacker News: high-scoring AI posts | Free search API | https://hn.algolia.com/api/v1/search_by_date | 📋 In the agent since 10 Oct 2026 ([decision D12](decisions.md)) |
 | Simon Willison's weblog | Atom | https://simonwillison.net/atom/everything/ | 📋 |
 | Hamel Husain: LLM evaluation | Page read | https://hamel.dev | ⚠️ |
 | AI Incident Database: real-world AI failures | RSS | https://incidentdatabase.ai/rss.xml | ✅ (feed link on site) |
