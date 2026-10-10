@@ -3,6 +3,7 @@
 model:
   provider: gemini                # swappable provider (US-7.2)
   name: gemini-flash-latest       # alias for the current Flash model; pin an exact version once stable
+  fallback_name: gemini-flash-lite-latest  # used if the main model fails on Google's side (5xx, timeout)
   api_key_env: GEMINI_API_KEY     # name of the environment variable holding the key
   max_calls_per_run: 8            # hard cap on model calls per run (G7); 1 draft uses up to 5
   timeout_seconds: 180            # give up on a model call after this long

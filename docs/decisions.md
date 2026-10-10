@@ -157,6 +157,19 @@ Key project decisions, newest last. Each entry records what was decided, why, wh
 
 ---
 
+## D14 · Fall back to a lighter model when Google's servers fail
+**Date:** 2026-10-10 · **Phase:** 2
+
+**Decision:** If the main model fails on Google's side (a 5xx error, overload or timeout), the agent retries once on a fallback model, `gemini-flash-lite-latest`. Errors caused by the request or the key (bad request, free-tier limit, unknown model) do not trigger the fallback. The library's own retries are limited to 2 attempts, and the ranking request sends shorter item summaries.
+
+**Why:** A run ranking 47 items failed with `504 DEADLINE_EXCEEDED` after the library had silently retried the same model several times. The ranking call is the largest request the agent makes, and free-tier capacity varies.
+
+**Alternatives considered:** Longer timeouts (slower failures, same outcome); splitting ranking into batches (more calls against the cap); switching the main model to Flash-Lite permanently (weaker judgement on every run).
+
+**Consequence:** A busy main model costs one extra call instead of a failed run. The run output says when the fallback answered, so quality differences can be traced. Retrying only on server-side errors means a real mistake in the request still fails loudly.
+
+---
+
 ## Open issues
 
 - **AI News (smol.ai) has published nothing since 10 Sep 2026** (see D11). Kept on the list; Hacker News added alongside it (D12).

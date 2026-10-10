@@ -17,9 +17,10 @@ def _load_prompt(name: str) -> str:
 
 def rank(llm: LLM, items: list, top_n: int) -> list:
     """Score every item and return the top_n as (item, scores) pairs (US-2.1)."""
+    # Ranking only needs the gist, so summaries are trimmed to keep this, the largest request, light.
     listing = "\n\n".join(
         f"[id {i.id}] {i.title}\nSource: {i.source} ({i.group}), published {i.published}\n"
-        f"Summary: {i.summary}"
+        f"Summary: {i.summary[:250]}"
         for i in items
     )
     prompt = _load_prompt("rank.md").replace("{items}", listing)
