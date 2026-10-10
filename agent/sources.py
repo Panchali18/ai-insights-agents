@@ -46,8 +46,9 @@ def _entry_date(entry):
     return None
 
 
-def collect(sources: list, lookback_days: int) -> CollectionResult:
-    """Read every source. A failing source is logged and skipped, never fatal."""
+def collect(sources: list, lookback_days: int, max_per_source: int = 15) -> CollectionResult:
+    """Read every source. A failing source is logged and skipped, never fatal.
+    Each source contributes at most max_per_source items, so one busy feed can't crowd out the rest."""
     result = CollectionResult()
     cutoff = datetime.now(timezone.utc) - timedelta(days=lookback_days)
     seen_urls = set()
@@ -68,6 +69,8 @@ def collect(sources: list, lookback_days: int) -> CollectionResult:
 
         kept = 0
         for entry in feed.entries:
+            if kept >= max_per_source:
+                break
             published = _entry_date(entry)
             if published and published < cutoff:
                 continue

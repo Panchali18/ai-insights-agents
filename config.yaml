@@ -9,6 +9,7 @@ model:
 run:
   drafts_per_run: 1               # start with 1; raise after testing
   lookback_days: 7                # only items published in the last N days (US-1.1 AC2)
+  max_items_per_source: 15        # stops one busy feed crowding out the others
   max_items_to_rank: 60           # most recent items sent to the ranking step
   output_dir: drafts
 

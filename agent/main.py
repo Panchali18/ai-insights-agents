@@ -49,9 +49,9 @@ def main():
     run = config["run"]
 
     print("Collecting from sources...")
-    result = collect(config["sources"], run["lookback_days"])
+    result = collect(config["sources"], run["lookback_days"], run.get("max_items_per_source", 15))
     for name, kept in result.ok_sources:
-        print(f"  ✓ {name}: {kept} recent items")
+        print(f"  ✓ {name}: {kept} recent item{'' if kept == 1 else 's'}")
     for name, reason in result.failed_sources:
         print(f"  ✗ {name}: skipped ({reason})")
 
