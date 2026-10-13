@@ -2,14 +2,14 @@
 
 Research-to-post AI agent that turns AI news and real practitioner pain points into well-sourced LinkedIn drafts, using a self-critique quality gate, cited claims and a human approval step. No generic AI content.
 
-> **Status: in development.** Phase 1 (collect → rank → draft) works. Phase 2's critic-and-revise loop is built and tested with sample data; its first real run is pending. Voice, content pillars and evaluation come later; see the [delivery phases](docs/requirements.md#8-delivery-phases).
+> **Status: in development.** Phase 1 (collect → rank → draft) works. Phase 2's critic-and-revise loop has had one real run; stricter framing, source and style checks were added after reviewing it, and are tested with sample data. Voice, content pillars and evaluation come later; see the [delivery phases](docs/requirements.md#8-delivery-phases).
 
 ## How it works
 
 1. **Collect:** reads recent items from an approved list of sources ([docs/sources.md](docs/sources.md)). A failing source is logged and skipped, never fatal.
 2. **Rank:** the model labels each item as *News* or *Pain point* and scores it on recency, momentum and relevance, then the top item is chosen.
-3. **Draft:** the agent reads the full article and drafts a post against a six-point quality bar. Anything it can't verify, or that needs the author's own experience, becomes a question for the author instead of a guess.
-4. **Critique and revise:** a separate model call reviews the draft against the quality bar, checks each claim against the source, and flags AI-writing tells and single-vendor sourcing. The review decides what happens next: pass, revise once, or reject. The code reads the critic's findings rather than trusting its stated verdict.
+3. **Draft:** the agent reads the source page and records honestly what it got (full article, social media post, or only the feed summary). If the page is blocked and there's only a headline, it skips to the next-ranked topic. It then drafts a post against a six-point quality bar and the author's style guide. Anything it can't verify, or that needs the author's own experience, becomes a question for the author instead of a guess.
+4. **Critique and revise:** a separate model call reviews the draft against the quality bar, checks each claim against the source and whether interpretations are presented as opinion, and flags single-source and social media sourcing. Plain code checks the clear-cut style rules (banned words, em dashes, "not X, but Y" reframes) and overrules the critic if it finds any. The review decides what happens next: pass, revise once, or reject. The code reads the critic's findings rather than trusting its stated verdict.
 5. **Save:** one dated Markdown file in `drafts/`, with each draft's status, scores, sources, the critic's review and a run summary.
 
 The agent cannot post anywhere. A human reviews every draft.
@@ -20,6 +20,7 @@ The agent cannot post anywhere. A human reviews every draft.
 - **Prompts as files:** the ranking and drafting instructions live in `prompts/`, so they can be reviewed and versioned like code.
 - **Prompt-injection defence:** fetched web content is wrapped as data and the model is told never to follow instructions inside it.
 - **Cost cap:** a hard limit on model calls per run (`max_calls_per_run`).
+- **Right-sized models:** ranking uses a lighter model; drafting and reviewing use the main one. A fallback model takes over if Google's servers fail.
 
 ## Project structure
 

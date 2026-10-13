@@ -166,12 +166,48 @@ def _hn_entries(source: dict, cutoff: datetime) -> list:
     return entries
 
 
-def fetch_article_text(url: str, limit: int = 8000) -> str:
-    """Fetch the full article page as plain text, to ground the draft. Returns '' on failure."""
+SOCIAL_DOMAINS = (
+    "x.com", "twitter.com", "linkedin.com", "facebook.com", "instagram.com",
+    "threads.net", "bsky.app", "reddit.com", "youtube.com", "tiktok.com",
+)
+BLOCK_MARKERS = (
+    "javascript is not available", "enable javascript", "please enable js", "sign in to",
+    "log in to", "login required", "create an account to", "subscribe to continue",
+    "subscribe to read", "access denied", "verify you are human", "are you a robot", "captcha",
+)
+MIN_ARTICLE_CHARS = 1500
+
+
+@dataclass
+class Article:
+    text: str
+    kind: str  # "full article" | "social media post" | "blocked" | "too short" | "unreachable"
+
+    @property
+    def usable(self) -> bool:
+        return self.kind in ("full article", "social media post")
+
+
+def _is_social(url: str) -> bool:
+    host = re.sub(r"^https?://(www\.|mobile\.)?", "", url.lower()).split("/")[0]
+    return any(host == d or host.endswith("." + d) for d in SOCIAL_DOMAINS)
+
+
+def fetch_article(url: str, limit: int = 8000) -> Article:
+    """Fetch the source page and say honestly what came back, so drafts aren't labelled
+    'full article' when the agent only saw a login wall or a fragment."""
     try:
         response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=TIMEOUT_SECONDS)
         response.raise_for_status()
     except Exception:  # noqa: BLE001
-        return ""
-    page = re.sub(r"(?is)<(script|style|nav|footer|header)[^>]*>.*?</\1>", " ", response.text)
-    return clean_text(page, limit)
+        return Article("", "unreachable")
+    page = re.sub(r"(?is)<(script|style|nav|footer|header|noscript)[^>]*>.*?</\1>", " ", response.text)
+    text = clean_text(page, limit)
+    head = text[:3000].lower()
+    if any(marker in head for marker in BLOCK_MARKERS):
+        return Article(text, "blocked")
+    if _is_social(url):
+        return Article(text, "social media post")
+    if len(text) < MIN_ARTICLE_CHARS:
+        return Article(text, "too short")
+    return Article(text, "full article")

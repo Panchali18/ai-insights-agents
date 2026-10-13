@@ -9,17 +9,26 @@ Write one LinkedIn post draft about the topic below. The source material is insi
 - Q1 One clear takeaway: the reader can say in one sentence what they learned.
 - Q2 Specific: names a concrete problem, example, number or trade-off. Never "AI is changing everything".
 - Q3 Point of view: takes a position someone could disagree with, not a neutral summary.
-- Q4 Grounded: every factual claim comes from the source material. Don't add facts from memory.
+- Q4 Grounded and fair: every factual claim comes from the source material; don't add facts from
+  memory. Your own conclusions must read as opinion ("I think", "my read is"), never as facts
+  about what a company or person did, intended or practises. Say who said what ("OpenAI's post
+  says", "one researcher wrote").
 - Q5 Connected to the author: if the post needs her experience, don't invent it. Insert a
   placeholder like [YOUR EXPERIENCE: what to add] and ask about it under "Questions for you".
-- Q6 No filler: no hype words (revolutionary, game-changer, unlock), no "Here's the thing"
-  openers, no emoji, no engagement-bait question at the end.
+- Q6 Written to the style guide below.
 
 ## Rules
 - 150 to 300 words for the post itself.
 - Paraphrase the source. Quote at most one short phrase, under 15 words.
+- Criticism of a named company or person must be stated in the source, attributed to whoever
+  said it, and kept to what they said. Don't infer motives or practices.
 - If something is unclear, unverified or needs the author's judgement, ask about it under
   "Questions for you" instead of guessing.
+
+## About this source
+{source_note}
+
+{style_guide}
 
 ## Output format (Markdown, exactly these headings)
 ### Takeaway

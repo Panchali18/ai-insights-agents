@@ -30,6 +30,11 @@ Everything about how this project was built, in one place. The agent reads this 
 | 19 | 2026-10-10 | Built Phase 2's critic-and-revise loop | Tested with sample data, including a critic that says "pass" while listing failures | D13 |
 | 20 | 2026-10-10 | Saw the earlier ranking call's result | Google returned `504 DEADLINE_EXCEEDED` after silent retries; added a fallback model | D14 |
 | 21 | 2026-10-10 | First real run of Phase 2 | Worked end to end. Picked "OpenAI withdraws three mathematical results"; the critic failed the first draft, it was revised once, then passed. 5 model calls, about 10 minutes in total, of which ranking took 319 seconds | D13 |
+| 22 | 2026-10-10 | Reviewed run 21's draft by hand | The critic had passed it, but the only source was one post on X labelled "full article", the post stated inferences about OpenAI as fact, and AI-writing tells got through | D15 |
+| 23 | 2026-10-13 | Made the critic stricter on framing and sources, and made the agent skip topics it can't read | Replaying run 21's draft: a lenient critic is now overruled and the draft is sent back | D15 |
+| 24 | 2026-10-13 | Turned the author's writing rules into a style guide, with a code-level check | Run 21's draft fails on "highlights" and "serve as" | D16 |
+| 25 | 2026-10-13 | Moved ranking to Flash-Lite | Pending a real run to measure the time saved | D17 |
+| 26 | 2026-10-13 | Real run with the stricter critic | Pending | — |
 
 ---
 
@@ -201,9 +206,44 @@ Everything about how this project was built, in one place. The agent reads this 
 
 ---
 
+## D15 · Check framing and source quality, and skip topics the agent can't read
+**Date:** 2026-10-13 · **Phase:** 2
+
+**Decision:** The critic now checks framing as well as facts: the writer's inference stated as fact, a number given a meaning the source doesn't give it, or criticism of a named company beyond what the source says (G4) all fail Q4. It flags single-source drafts and social media sources. Before drafting, the code reads the source page and labels honestly what it got (full article, social media post, blocked, too short); the label is passed to the drafter and critic. If a topic's page is blocked and the feed gave only a headline, the agent skips it and drafts the next-ranked topic, listing skipped topics in the drafts file.
+
+**Why:** Run 21's draft passed the critic but wouldn't have been safe to post (timeline row 22). The critic checked that numbers appeared in the source, not whether the post drew fair conclusions from them, and it saw the same thin material as the writer. The draft was labelled "full article" though the source was a post on X, which mostly blocks automated readers.
+
+**Alternatives considered:** Drafting from the headline with a warning (invites invented detail); finding a second source automatically (more calls and a search step; possible later).
+
+**Consequence:** Ranking now returns 3 spare topics. Some weeks may produce no draft if no top topic is readable, which the file says plainly. A social media source can still be used, but the draft must attribute claims and ask the author to confirm them.
+
+---
+
+## D16 · Use the author's writing rules as the style guide, and check the clear-cut ones in code
+**Date:** 2026-10-13 · **Phase:** 2 (brings forward part of Phase 3)
+
+**Decision:** The author's writing rules are condensed into `prompts/style-guide.md`, given to both the drafter and the critic. Clear-cut breaks (banned words and phrases, em dashes, "it's not X, it's Y" reframes, bold inside the post, a closing question) are found by plain code in `agent/style.py`. If code finds any, Q6 fails whatever the critic says, and the breaks are added to the revision instructions.
+
+**Why:** Run 21's critic passed "highlights" and "serve as", both on the author's banned list. A model reviewer is inconsistent on word lists; a code check isn't, and costs nothing.
+
+**Consequence:** Resolves open question 4 in the requirements. The code check is deliberately narrow, so it rarely flags ordinary sentences; tone, analogies and subtler pivots stay with the critic.
+
+---
+
+## D17 · Rank with Flash-Lite, draft and critique with the main model
+**Date:** 2026-10-13 · **Phase:** 2
+
+**Decision:** The ranking call uses `gemini-flash-lite-latest` (`model.ranking_name` in config). Drafting and critiquing stay on the main model.
+
+**Why:** Ranking took 319 seconds in run 21, about half the run. Scoring 47 headlines needs less judgement than writing or reviewing a post.
+
+**Consequence:** Expected to cut run time substantially; to be measured on the next real run. If ranking quality drops (for example, case studies winning again), switch it back with one config line.
+
+---
+
 ## Open issues
 
-- **The critic passed a draft it should have flagged** (run 2 on 10 Oct 2026, "OpenAI withdraws three mathematical results"). Found on human review: the only source was a single post on X, labelled "full article" though X pages mostly block automated readers; the post stated the agent's own inferences about OpenAI's practice as fact; and several AI-writing tells got through. Proposed fixes, not yet made: (1) a framing check in the critic, including criticism of named companies (G4); (2) flag any single-source draft and treat social posts as needing confirmation; (3) detect login walls and very short pages, and label the draft "feed summary only"; (4) use the author's writing rules as the critic's Q6 checklist and the drafter's style guide; (5) use Flash-Lite for ranking, which took 319 seconds.
+- **The critic passed a draft it should have flagged** (run 21). Fixes made on 13 Oct 2026 (D15, D16, D17); confirm with a real run.
 
 - **AI News (smol.ai) has published nothing since 10 Sep 2026** (see D11). Kept on the list; Hacker News added alongside it (D12).
 - **The first draft relied on a single vendor source** (Microsoft writing about its own products). Phase 2 should flag single-vendor drafts and look for an independent view.

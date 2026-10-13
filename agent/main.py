@@ -57,11 +57,24 @@ def review_report(post) -> list:
     unsupported = [c.get("claim", "") for c in claims if c.get("supported") is not True]
     lines += ["", f"- Claims checked: {len(claims)}, unsupported: {len(unsupported)}"]
     lines += [f"  - Unsupported: {claim}" for claim in unsupported]
+    misframed = [c.get("claim", "") for c in claims
+                 if c.get("type") == "interpretation" and c.get("supported") is not True]
+    lines += [f"  - Interpretation stated as fact: {claim}" for claim in misframed
+              if claim not in unsupported]
+    if final.get("unconfirmed_social_source"):
+        lines.append("- ⚠ Social media source: confirm the key facts with a second source before posting.")
     if final.get("single_vendor_source"):
         lines.append("- ⚠ Single-vendor source: the only source is a company writing about its own products.")
+    elif final.get("single_source"):
+        lines.append("- ⚠ Single source: the post rests on one source.")
+    if post.style_findings:
+        lines.append("- Style-rule breaks found by code:")
+        lines += [f"  - {finding}" for finding in post.style_findings]
     if post.outcome == "rejected":
-        lines.append("- What still needed fixing:")
-        lines += [f"  - {line}" for line in final.get("revision_instructions", [])]
+        still = list(final.get("revision_instructions") or []) + [f"Style rule: {f}" for f in post.style_findings]
+        if still:
+            lines.append("- What still needed fixing:")
+            lines += [f"  - {line}" for line in still]
     return lines + [""]
 
 
@@ -121,20 +134,30 @@ def main():
         raise SystemExit("No recent items collected, so there is nothing to draft.")
 
     from agent.llm import LLM
-    from agent.steps import rank, write_post
+    from agent.steps import gather_material, rank, write_post
 
     llm = LLM(config["model"])
     items = sorted(result.items, key=lambda i: i.published, reverse=True)[: run["max_items_to_rank"]]
 
     print(f"\nRanking {len(items)} items...")
-    selected = rank(llm, items, run["drafts_per_run"])
-    if not selected:
+    wanted = run["drafts_per_run"]
+    candidates = rank(llm, items, wanted + run.get("spare_candidates", 3))
+    if not candidates:
         raise SystemExit("The ranking step returned no usable items.")
 
-    sections = []
-    for number, (item, scores) in enumerate(selected, start=1):
-        print(f"Drafting and reviewing: {item.title}")
-        post = write_post(llm, item, run.get("max_revisions", 1))
+    sections, skipped = [], []
+    number = 0
+    for item, scores in candidates:
+        if number >= wanted:
+            break
+        material = gather_material(item)
+        if material is None:
+            print(f"Skipping (couldn't read the source properly): {item.title}")
+            skipped.append(item)
+            continue
+        number += 1
+        print(f"Drafting and reviewing: {item.title}  [{material.grounded_on}]")
+        post = write_post(llm, item, material, run.get("max_revisions", 1))
         print(f"  Quality gate: {post.outcome} after {post.revisions} revision(s)")
         sections += [
             f"## Draft {number}: {item.title}",
@@ -143,11 +166,19 @@ def main():
             f"**Label:** {scores.get('label', '?')} · **Scores:** recency {scores.get('recency')}, "
             f"momentum {scores.get('momentum')}, relevance {scores.get('relevance')}  ",
             f"**Why this topic:** {scores.get('reason', '')}  ",
-            f"**Grounded on:** {'full article' if post.grounded_on_article else 'feed summary only (article page could not be read)'}",
+            f"**Grounded on:** {post.grounded_on}",
             "",
             post.text.strip(),
             "",
         ] + review_report(post)
+
+    if skipped:
+        sections += ["## Topics skipped", "",
+                     "Ranked highly, but the source page was blocked or too thin to draft from safely:", ""]
+        sections += [f"- [{i.title}]({i.url}) ({i.source})" for i in skipped]
+        sections.append("")
+    if number == 0:
+        sections += ["No draft this run: none of the top-ranked topics had a readable source.", ""]
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     output_dir = ROOT / run["output_dir"]

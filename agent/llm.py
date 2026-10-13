@@ -23,6 +23,7 @@ class LLM:
         self.provider = model_config["provider"]
         self.model_name = model_config["name"]
         self.fallback_model = model_config.get("fallback_name")
+        self.ranking_model = model_config.get("ranking_name") or self.model_name
         self.max_calls = model_config.get("max_calls_per_run", 5)
         self.timeout_seconds = model_config.get("timeout_seconds", 180)
         self.calls_made = 0
@@ -59,8 +60,8 @@ class LLM:
                 names.append(model.name.removeprefix("models/"))
         return sorted(names)
 
-    def generate(self, prompt: str, want_json: bool = False) -> str:
-        """Send one prompt to the model and return its text reply."""
+    def generate(self, prompt: str, want_json: bool = False, model: str = None) -> str:
+        """Send one prompt and return the text reply. `model` overrides the main model for one call."""
         if self.calls_made >= self.max_calls:
             raise CallLimitReached(f"Reached the cap of {self.max_calls} model calls for this run.")
         self.calls_made += 1
@@ -71,7 +72,8 @@ class LLM:
             temperature=0.4,
             response_mime_type="application/json" if want_json else "text/plain",
         )
-        models = [self.model_name] + ([self.fallback_model] if self.fallback_model else [])
+        first = model or self.model_name
+        models = [first] + ([self.fallback_model] if self.fallback_model and self.fallback_model != first else [])
         last_problem = ""
         for model in models:
             started = time.monotonic()
@@ -93,7 +95,7 @@ class LLM:
                         f"in config.yaml.\nDetails: {message[:300]}"
                     ) from error
                 raise
-            if model != self.model_name:
+            if model != first:
                 print(f"  (answered by fallback model {model})")
             print(f"  (model answered in {time.monotonic() - started:.0f}s)")
             return response.text or ""
