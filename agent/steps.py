@@ -83,6 +83,8 @@ def gather_material(item: Item):
     article = fetch_article(item.url)
     if article.usable and len(article.text) > len(item.summary):
         return Material(article.text, article.kind)
+    if len(item.full_text) >= 1500:  # many newsletter feeds include the whole article
+        return Material(item.full_text, "full article")
     if len(item.summary) >= MIN_SUMMARY_CHARS and not item.summary.startswith("Hacker News story with"):
         return Material(item.summary, "feed summary")
     return None

@@ -182,13 +182,13 @@ Every draft belongs to one of four pillars. The starting mix is a target to revi
 ## 7. Open questions
 
 1. ~~Which sources go on the initial approved list?~~ **Resolved 10 Oct 2026:** 23 sources approved; see [sources.md](sources.md).
-2. Which topic areas should ranking favour, if any, given the broad AI scope?
+2. ~~Which topic areas should ranking favour, if any, given the broad AI scope?~~ **Resolved 13 Oct 2026:** ranking favours topics useful to the 3 target audiences (hiring managers for AI roles, teams adopting AI, BA and product peers); see decision D18.
 3. ~~How many drafts per weekly run are useful: 2, 3 or 5?~~ **Resolved 10 Oct 2026:** start with 1 draft per run, test, then tune.
 4. ~~Which sample posts will the style guide be built from?~~ **Resolved 13 Oct 2026:** the author's own writing rules, in `prompts/style-guide.md` (decision D16).
 5. How will the author record feedback on drafts: edits in the file, or a short rating?
 6. Should post performance (likes, comments) be logged manually to inform ranking later? If so, it belongs in the posting log (US-9.2).
 7. Is the target pillar mix right, and should it be reviewed after the first 8 posts?
-8. Which of the author's projects can "building in public" posts draw on: this agent only, or the JD Analyzer too?
+8. ~~Which of the author's projects can "building in public" posts draw on: this agent only, or the JD Analyzer too?~~ **Resolved 13 Oct 2026:** both projects.
 
 ## 8. Delivery phases
 

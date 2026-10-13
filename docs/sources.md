@@ -1,68 +1,52 @@
 # Sources
 
-**Status:** Approved v1.0 · **Last updated:** 2026-10-10
+**Status:** v2.0 · **Last updated:** 2026-10-13
 
-The approved list of sources the agent reads each week, how it reads each one, and why other sources were left out. The agent reads only sources on this list (requirement US-1.1, AC1).
+The sources the agent reads each week, how it reads each one, and why others were left out. The agent reads only sources in `config.yaml` (requirement US-1.1, AC1), and a source is added there only after its feed is checked.
 
-**Status key**
-- ✅ Feed checked and working on 10 Oct 2026
-- 📋 Listed in a reliable feed directory or on the publisher's site; to be tested during the build
-- ⚠️ No feed; the agent reads the web page directly. These are the fragile sources, because a site redesign can break them.
+**Audience** (decided 13 Oct 2026, [D18](decisions.md)): hiring managers for AI roles, teams adopting AI, and business analysts and product owners. AI researchers and engineers aren't the target, so sources written mainly for them are kept in reserve.
 
-## Approved sources (23)
+## Active sources (15)
 
-### Labs and vendors (6)
+Each group contributes at most a set number of items per run (`group_caps` in config), so the pool leans towards the groups that suit the audience. ✅ = feed checked and working on the date shown.
 
-| Source | Access | Address | Status |
+| Group (cap) | Source | Address | Status |
 |---|---|---|---|
-| OpenAI news | RSS | https://openai.com/news/rss.xml | ✅ |
-| Google DeepMind blog | RSS | https://deepmind.google/blog/feed | ✅ |
-| Anthropic news | Page read | https://www.anthropic.com/news | ⚠️ |
-| Google Research blog | RSS | https://research.google/blog/rss/ | 📋 |
-| Hugging Face blog | RSS | https://huggingface.co/blog/feed.xml | 📋 |
-| AWS Machine Learning blog | RSS | https://aws.amazon.com/blogs/machine-learning/feed/ | 📋 |
+| Labs and vendors (6) | OpenAI news (max 5) | https://openai.com/news/rss.xml | ✅ 10 Oct |
+| | Google DeepMind blog | https://deepmind.google/blog/feed | ✅ 10 Oct |
+| | Microsoft Foundry blog | https://devblogs.microsoft.com/foundry/feed/ | ✅ 10 Oct |
+| Community (8) | AI News (smol.ai) | https://news.smol.ai/rss.xml | ⚠️ No issue since 10 Sep 2026 ([D11](decisions.md)) |
+| | Hacker News: AI stories with 100+ points (max 5) | https://hn.algolia.com/api/v1/search_by_date | ✅ 10 Oct ([D12](decisions.md)) |
+| | AI Incident Database (max 5) | https://incidentdatabase.ai/rss.xml | ✅ 10 Oct |
+| Analysis (10) | One Useful Thing (Ethan Mollick, Wharton) | https://www.oneusefulthing.org/feed | ✅ 13 Oct, full text in feed |
+| | AI as Normal Technology (Princeton) | https://www.normaltech.ai/feed | ✅ 13 Oct, full text in feed |
+| | Import AI (weekly) | https://importai.substack.com/feed | ✅ 13 Oct, full text in feed |
+| | Epoch AI | https://epochai.substack.com/feed | ✅ 13 Oct, full text in feed |
+| Product practice (8) | SVPG (Marty Cagan): product roles and AI | https://www.svpg.com/feed/ | ✅ 13 Oct, excerpts in feed |
+| | The Product Compass: hands-on AI and product management | https://www.productcompass.pm/feed | ✅ 13 Oct, full text in feed |
+| Enterprise (5) | McKinsey Insights, filtered to AI articles | https://www.mckinsey.com/insights/rss | ✅ 13 Oct, excerpts in feed |
+| Policy (4) | EU AI Act Newsletter | https://artificialintelligenceact.substack.com/feed | ✅ 13 Oct, full text in feed |
+| Research (3) | Carnegie Mellon ML blog (about monthly) | https://blog.ml.cmu.edu/feed/ | ✅ 10 Oct |
 
-### Microsoft (2)
+Newsletters post every 1 to 2 weeks, so they use a 14-day window instead of the default 7 days.
 
-| Source | Access | Address | Status |
-|---|---|---|---|
-| Microsoft Foundry blog | RSS | https://devblogs.microsoft.com/foundry/feed/ | ✅ (feed link on site; latest post 7 Oct 2026) |
-| Microsoft 365 Copilot Tech Community blog | RSS | https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5888262158242517104&board=Microsoft365CopilotBlog&size=25 | 📋 |
+## In reserve
 
-### Community and practitioner pain points (5)
+Approved on 10 Oct 2026 but not active, either because they're written mainly for AI builders or because they have no feed and need a page reader, which isn't built yet.
 
-| Source | Access | Address | Status |
-|---|---|---|---|
-| AI News (smol.ai): summarises top AI Discord servers, subreddits and X accounts | RSS | https://news.smol.ai/rss.xml | ⚠️ Feed works, but no new issue since 10 Sep 2026 (see [decision D11](decisions.md)) |
-| Hacker News: high-scoring AI posts | Free search API | https://hn.algolia.com/api/v1/search_by_date | 📋 In the agent since 10 Oct 2026 ([decision D12](decisions.md)) |
-| Simon Willison's weblog | Atom | https://simonwillison.net/atom/everything/ | 📋 |
-| Hamel Husain: LLM evaluation | Page read | https://hamel.dev | ⚠️ |
-| AI Incident Database: real-world AI failures | RSS | https://incidentdatabase.ai/rss.xml | ✅ (feed link on site) |
-
-### Analysis and critical voices (5)
-
-| Source | Access | Address | Status |
-|---|---|---|---|
-| Latent Space: AI engineering | Newsletter feed | https://www.latent.space/feed | 📋 |
-| Import AI: research and policy, weekly | Newsletter feed | https://importai.substack.com/feed | 📋 |
-| Epoch AI, Gradient Updates: one in-depth question a week | Newsletter feed | https://epochai.substack.com/feed | 📋 |
-| AI as Normal Technology (Princeton, formerly *AI Snake Oil*) | Newsletter feed | https://www.normaltech.ai/feed | 📋 |
-| One Useful Thing (Ethan Mollick, Wharton) | Newsletter feed | https://www.oneusefulthing.org/feed | 📋 |
-
-### Research institutions (3)
-
-| Source | Access | Address | Status |
-|---|---|---|---|
-| Stanford HAI: research, policy, AI Index | Page read | https://hai.stanford.edu/news | ⚠️ |
-| Carnegie Mellon ML blog: about monthly | RSS | https://blog.ml.cmu.edu/feed/ | ✅ (feed link on site) |
-| Berkeley AI Research (BAIR) blog | RSS | https://bair.berkeley.edu/blog/feed.xml | 📋 |
-
-### Policy and security (2)
-
-| Source | Access | Address | Status |
-|---|---|---|---|
-| EU AI Act Newsletter | Newsletter feed | https://artificialintelligenceact.substack.com/feed | 📋 |
-| OWASP GenAI Security Project | Page read | https://genai.owasp.org | ⚠️ |
+| Source | Address | Reason not active |
+|---|---|---|
+| Anthropic news | https://www.anthropic.com/news | No feed; needs a page reader |
+| Stanford HAI | https://hai.stanford.edu/news | No feed; needs a page reader. Strong fit for the audience, so first in line |
+| OWASP GenAI Security Project | https://genai.owasp.org | No feed; its standards are in the [reference library](reference-library.md) |
+| Hamel Husain: LLM evaluation | https://hamel.dev | No feed; builder audience |
+| Microsoft 365 Copilot Tech Community blog | https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5888262158242517104&board=Microsoft365CopilotBlog&size=25 | Not yet tested |
+| Google Research blog | https://research.google/blog/rss/ | Builder and research audience |
+| Hugging Face blog | https://huggingface.co/blog/feed.xml | Builder audience |
+| AWS Machine Learning blog | https://aws.amazon.com/blogs/machine-learning/feed/ | Builder audience |
+| Simon Willison's weblog | https://simonwillison.net/atom/everything/ | Builder audience |
+| Latent Space | https://www.latent.space/feed | Builder audience |
+| Berkeley AI Research (BAIR) blog | https://bair.berkeley.edu/blog/feed.xml | Research audience |
 
 ## Handling rules
 
@@ -87,6 +71,11 @@ The approved list of sources the agent reads each week, how it reads each one, a
 | AI Ireland | Newsroom last updated Nov 2025; no feed. |
 | MBZUAI (UAE) | No direct feed found. Revisit if UAE coverage becomes a priority. |
 | Lenny's Newsletter, Stratechery | Paywalled: the agent can't read them, and reusing their content raises copyright issues. |
+| MIT Sloan Management Review | Strong fit, but its site disallows automated readers (robots.txt), and the agent respects that. Checked 13 Oct 2026. |
+| Mind the Product | Its feed address returns a non-standard data format with no dates. Checked 13 Oct 2026; revisit if a standard feed appears. |
+| Product Growth (Aakash Gupta) | Feed items are paywalled previews. Checked 13 Oct 2026. |
+| Microsoft WorkLab | No feed. Its annual Work Trend Index is in the [reference library](reference-library.md). Checked 13 Oct 2026. |
+| Microsoft Dynamics 365 and Copilot business apps | Deferred by decision on 13 Oct 2026; revisit later. |
 | Artificial Analysis | Valuable benchmark data but no feed. Kept in the [reference library](reference-library.md) instead. |
 
 ## Research findings

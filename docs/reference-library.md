@@ -1,6 +1,6 @@
 # Reference library
 
-**Status:** Draft v0.1 · **Last updated:** 2026-10-10
+**Status:** Draft v0.2 · **Last updated:** 2026-10-13
 
 Reports, standards and data sources that change rarely, so the agent doesn't check them weekly. Instead, it can cite them when drafting to ground a post. For example, a post about a new model launch is stronger with "but independent benchmarks show…".
 
@@ -21,6 +21,7 @@ Reports, standards and data sources that change rarely, so the agent doesn't che
 | AI Index Report (2026 edition) | Stanford HAI | Capability, investment, adoption and regulation trends | Check figures against the report itself, not press summaries | https://hai.stanford.edu |
 | MIT study on enterprise AI pilots | MIT | The gap between AI pilots and production results | The widely quoted "95% of pilots fail" figure has been questioned on method; present it with that caveat or not at all | https://www.websiteplanet.com/news/mit-report-ai-pilots-failing/ (summary; link to the original report before citing) |
 | Artificial Analysis | Artificial Analysis (independent) | Model quality, speed and price comparisons | Benchmarks measure narrow tasks; note which benchmark is cited | https://artificialanalysis.ai |
+| Work Trend Index (2026 annual report) | Microsoft WorkLab | How organisations and employees are adopting AI agents at work; useful for the "teams adopting AI" audience | Vendor research: Microsoft sells the products it studies, so pair with an independent source | https://www.microsoft.com/en-us/worklab |
 | AI Incident Database | Responsible AI Collaborative | Documented real-world AI failures | Incidents are reported cases, not a complete count | https://incidentdatabase.ai |
 
 ## To add

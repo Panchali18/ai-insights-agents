@@ -119,6 +119,7 @@ def main():
         run["lookback_days"],
         run.get("max_items_per_source", 15),
         run.get("stale_after_days", 21),
+        run.get("group_caps"),
     )
     for name, kept in result.ok_sources:
         print(f"  ✓ {name}: {kept} recent item{'' if kept == 1 else 's'}")

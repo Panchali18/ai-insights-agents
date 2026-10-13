@@ -21,6 +21,7 @@ class Item:
     url: str
     published: str
     summary: str
+    full_text: str = ""  # article text included in the feed itself, if any (many newsletters do)
 
 
 @dataclass
@@ -48,20 +49,29 @@ def _entry_date(entry):
 
 
 def collect(
-    sources: list, lookback_days: int, max_per_source: int = 15, stale_after_days: int = 21
+    sources: list,
+    lookback_days: int,
+    max_per_source: int = 15,
+    stale_after_days: int = 21,
+    group_caps: dict = None,
 ) -> CollectionResult:
     """Read every source. A failing source is logged and skipped, never fatal.
-    Each source contributes at most max_per_source items (newest first), so one busy feed
-    can't crowd out the rest. A source whose newest item is older than stale_after_days is
-    flagged as stale: it is reachable but appears to have stopped publishing."""
+
+    Per source (all optional in config): `lookback_days` overrides the run's window, for
+    sources that post every week or two; `max_items` overrides max_per_source; `keywords` keeps
+    only items whose title or summary mention one of them, for broad feeds; `stale_after_days`
+    sets when a quiet source gets a warning.
+    Per group: `group_caps` limits how many items a whole group contributes, newest first, so the
+    pool leans towards the groups that suit the author's audience."""
     result = CollectionResult()
     now = datetime.now(timezone.utc)
-    cutoff = now - timedelta(days=lookback_days)
     oldest = datetime.min.replace(tzinfo=timezone.utc)
     seen_urls = set()
+    collected = []  # (source, group, entry) before group caps
 
     for source in sources:
         name = source["name"]
+        cutoff = now - timedelta(days=source.get("lookback_days", lookback_days))
         try:
             if source.get("type") == "hn_search":
                 entries = _hn_entries(source, cutoff)  # already sorted, most discussed first
@@ -79,31 +89,58 @@ def collect(
             result.failed_sources.append((name, str(error)[:150]))
             continue
 
+        keywords = [k.lower() for k in source.get("keywords", [])]
+        limit = source.get("max_items", max_per_source)
         kept = 0
         for entry in entries:
-            if kept >= max_per_source:
+            if kept >= limit:
                 break
             published = entry["published"]
             if published and published < cutoff:
                 continue
+            if keywords:
+                haystack = f"{entry['title']} {clean_text(entry['summary'], 2000)}".lower()
+                if not any(re.search(rf"\b{re.escape(k)}\b", haystack) for k in keywords):
+                    continue
             url = entry["link"]
             if not url or url in seen_urls:
                 continue
             seen_urls.add(url)
-            result.items.append(
-                Item(
-                    id=len(result.items) + 1,
-                    title=clean_text(entry["title"], 200),
-                    source=name,
-                    group=source.get("group", ""),
-                    url=url,
-                    published=published.strftime("%Y-%m-%d") if published else "unknown",
-                    summary=clean_text(entry["summary"], 600),
-                )
-            )
+            collected.append((source, entry))
             kept += 1
         result.ok_sources.append((name, kept))
 
+    # Group caps: keep the newest items within each capped group.
+    caps = group_caps or {}
+    by_group = {}
+    for source, entry in collected:
+        by_group.setdefault(source.get("group", ""), []).append((source, entry))
+    final = []
+    for group, members in by_group.items():
+        if group in caps:
+            members = sorted(members, key=lambda m: m[1]["published"] or oldest, reverse=True)[: caps[group]]
+        final += members
+    dropped = {}
+    kept_ids = {id(entry) for _, entry in final}
+    for source, entry in collected:
+        if id(entry) not in kept_ids:
+            dropped[source["name"]] = dropped.get(source["name"], 0) + 1
+    result.ok_sources = [(n, k - dropped.get(n, 0)) for n, k in result.ok_sources]
+
+    for source, entry in final:
+        published = entry["published"]
+        result.items.append(
+            Item(
+                id=len(result.items) + 1,
+                title=clean_text(entry["title"], 200),
+                source=source["name"],
+                group=source.get("group", ""),
+                url=entry["link"],
+                published=published.strftime("%Y-%m-%d") if published else "unknown",
+                summary=clean_text(entry["summary"], 600),
+                full_text=clean_text(entry.get("content", ""), 8000),
+            )
+        )
     return result
 
 
@@ -118,6 +155,7 @@ def _rss_entries(source: dict) -> list:
             "link": e.get("link", ""),
             "published": _entry_date(e),
             "summary": e.get("summary", ""),
+            "content": max((c.get("value", "") for c in e.get("content", [])), key=len, default=""),
         }
         for e in feed.entries
     ]

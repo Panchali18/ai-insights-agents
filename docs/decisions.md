@@ -35,6 +35,10 @@ Everything about how this project was built, in one place. The agent reads this 
 | 24 | 2026-10-13 | Turned the author's writing rules into a style guide, with a code-level check | Run 21's draft fails on "highlights" and "serve as" | D16 |
 | 25 | 2026-10-13 | Moved ranking to Flash-Lite | Pending a real run to measure the time saved | D17 |
 | 26 | 2026-10-13 | Real run with the stricter critic | Ranking took 30 seconds on Flash-Lite (was 319). Topic: "The gap in shared understanding of LLM capability is widening", read as a social media post. The first draft call hit a 503 and the fallback model wrote it. The critic rejected the draft after 1 revision | D14, D15, D17 |
+| 27 | 2026-10-13 | Reviewed run 26 | The draft was better (claims attributed, opinion marked) but rejected for minor style points. Bigger issue: the topic was a social media post, and most of the pool was vendor marketing, raw incident reports and engineer discussion | D18 |
+| 28 | 2026-10-13 | Defined the audience | Hiring managers for AI roles, teams adopting AI, and BA and product peers. Not AI builders | D18 |
+| 29 | 2026-10-13 | Reworked the source pool | Checked 11 more feeds; added 7 (analysis, product practice, enterprise, policy); excluded 4 with reasons; capped each group; ranking now scores for the audience | D18 |
+| 30 | 2026-10-13 | Dry run with the new pool | Pending | — |
 
 ---
 
@@ -241,7 +245,22 @@ Everything about how this project was built, in one place. The agent reads this 
 
 ---
 
+## D18 · Write for 3 business audiences and rebalance the source pool by group
+**Date:** 2026-10-13 · **Phase:** 2
+
+**Decision:** Posts are written for hiring managers for AI roles, teams adopting AI, and business analysts and product owners. The source pool is reorganised into groups, each with a cap on items per run. Added: One Useful Thing, AI as Normal Technology, Import AI, Epoch AI (Analysis); SVPG and The Product Compass (Product practice); McKinsey Insights filtered to AI articles (Enterprise); EU AI Act Newsletter (Policy). OpenAI, Hacker News and the AI Incident Database are cut to 5 items each, and Hacker News needs 100 points instead of 50. The ranking prompt scores topics on whether one of these readers could act on a post about them.
+
+**Why:** Run 26 picked a social media post about LLM capability. The draft was accurate, but most of it summarised someone else's post. About 40 of 42 items in the pool came from vendor marketing, raw incident reports and engineer discussion, so ranking could only pick the best of a poor fit. A post adds value on LinkedIn when the author can say what a development means for a business, and the pool had few sources written for that reader.
+
+**Alternatives considered:** Keeping the pool and tightening ranking only (it can't pick what isn't there); adding many more sources (more noise without caps); a Dynamics 365 group (deferred by the author).
+
+**Consequence:** Newsletters post every 1 to 2 weeks, so they use a 14-day window. Many include the whole article in the feed, which the agent now uses when a page can't be read. 11 approved sources are in reserve, mostly written for AI builders. Stanford HAI is first in line once a page reader exists. Resolves open questions 2 and 8 in the requirements.
+
+---
+
 ## Open issues
+
+- **Quality gate and content direction changes agreed on 13 Oct 2026, not yet made:** split critic findings into major (block) and minor (list as quick fixes); make every draft postable as written, with personal touches as optional suggestions and "must check" questions only for unverified facts; full drafts from the build logs of both projects; news and research as short briefs where the author picks an angle.
 
 - **The critic passed a draft it should have flagged** (run 21). Fixes made on 13 Oct 2026 (D15, D16, D17); confirm with a real run.
 

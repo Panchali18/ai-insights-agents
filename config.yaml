@@ -14,34 +14,97 @@ run:
   max_revisions: 1                # critic sends a draft back at most this many times, then rejects
   spare_candidates: 3             # extra ranked topics to fall back on if a source page can't be read
   lookback_days: 7                # only items published in the last N days (US-1.1 AC2)
-  max_items_per_source: 15        # stops one busy feed crowding out the others
+  max_items_per_source: 8         # default per source; some sources set their own max_items
   stale_after_days: 21            # warn when a source's newest item is older than this
   max_items_to_rank: 60           # most recent items sent to the ranking step
   output_dir: drafts
 
-# Phase 1 uses the sources marked ✅ in docs/sources.md, plus Hacker News.
-# The rest are added and tested in later phases.
+  # Each group contributes at most this many items per run, so the pool leans towards
+  # sources that suit the audience (decision D18). Groups not listed are uncapped.
+  group_caps:
+    Labs and vendors: 6        # mostly launches and customer case studies
+    Community: 8               # engineer discussion and incident reports
+    Analysis: 10               # evidence-based writing on AI in work and society
+    Product practice: 8        # how product roles and teams work with AI
+    Enterprise: 5              # adoption research for business leaders
+    Policy: 4
+    Research: 3
+
+# Audience: hiring managers for AI roles, teams adopting AI, and BA and product peers (D18).
+# Sources are checked in docs/sources.md before being added here.
 sources:
+  # Labs and vendors
   - name: OpenAI news
-    group: Labs
+    group: Labs and vendors
     url: https://openai.com/news/rss.xml
+    max_items: 5
   - name: Google DeepMind blog
-    group: Labs
+    group: Labs and vendors
     url: https://deepmind.google/blog/feed
   - name: Microsoft Foundry blog
-    group: Microsoft
+    group: Labs and vendors
     url: https://devblogs.microsoft.com/foundry/feed/
+
+  # Community and pain points
   - name: AI News (smol.ai)
     group: Community
     url: https://news.smol.ai/rss.xml   # quiet since 10 Sep 2026; kept so it's picked up if it resumes
   - name: Hacker News
     group: Community
     type: hn_search                     # free Algolia search API, no key
-    min_points: 50                      # only stories the community upvoted
-    queries: [LLM, AI agent, RAG, OpenAI, Anthropic, Gemini]
+    min_points: 100                     # only stories the community strongly upvoted
+    max_items: 5
+    queries: [LLM, AI agent, RAG, OpenAI, Anthropic, Gemini, AI adoption]
   - name: AI Incident Database
     group: Community
     url: https://incidentdatabase.ai/rss.xml
+    max_items: 5
+
+  # Analysis: weekly or fortnightly newsletters, so a 14-day window
+  - name: One Useful Thing (Ethan Mollick)
+    group: Analysis
+    url: https://www.oneusefulthing.org/feed
+    lookback_days: 14
+    stale_after_days: 45
+  - name: AI as Normal Technology (Princeton)
+    group: Analysis
+    url: https://www.normaltech.ai/feed
+    lookback_days: 14
+    stale_after_days: 45
+  - name: Import AI
+    group: Analysis
+    url: https://importai.substack.com/feed
+    lookback_days: 14
+  - name: Epoch AI
+    group: Analysis
+    url: https://epochai.substack.com/feed
+    lookback_days: 14
+    stale_after_days: 45
+
+  # Product practice
+  - name: SVPG (Marty Cagan)
+    group: Product practice
+    url: https://www.svpg.com/feed/
+    lookback_days: 14
+    stale_after_days: 45
+  - name: The Product Compass
+    group: Product practice
+    url: https://www.productcompass.pm/feed
+    lookback_days: 14
+
+  # Enterprise adoption
+  - name: McKinsey Insights (AI only)
+    group: Enterprise
+    url: https://www.mckinsey.com/insights/rss
+    keywords: [AI, agentic, generative, gen AI, artificial intelligence, automation]
+
+  # Policy
+  - name: EU AI Act Newsletter
+    group: Policy
+    url: https://artificialintelligenceact.substack.com/feed
+    lookback_days: 14
+
+  # Research
   - name: Carnegie Mellon ML blog
     group: Research
     url: https://blog.ml.cmu.edu/feed/
