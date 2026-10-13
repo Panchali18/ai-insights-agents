@@ -39,7 +39,8 @@ Everything about how this project was built, in one place. The agent reads this 
 | 28 | 2026-10-13 | Defined the audience | Hiring managers for AI roles, teams adopting AI, and BA and product peers. Not AI builders | D18 |
 | 29 | 2026-10-13 | Reworked the source pool | Checked 11 more feeds; added 7 (analysis, product practice, enterprise, policy); excluded 4 with reasons; capped each group; ranking now scores for the audience | D18 |
 | 30 | 2026-10-13 | Dry run with the new pool from the codespace | 22 items. The new business sources came through, but the 3 feeds on substack.com addresses were refused with 403 | D19 |
-| 31 | 2026-10-13 | Moved Import AI and EU AI Act to the publishers' own sites; Epoch AI to reserve | Pending a second dry run | D19 |
+| 31 | 2026-10-13 | Moved Import AI and EU AI Act to the publishers' own sites; Epoch AI to reserve | Second dry run clean: 14 sources, no failures, 24 items. 10 of the 24 now come from analysis, product practice and enterprise sources, up from none | D19 |
+| 32 | 2026-10-13 | Full run with the new pool | Pending | — |
 
 ---
 
