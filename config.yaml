@@ -73,13 +73,8 @@ sources:
     stale_after_days: 45
   - name: Import AI
     group: Analysis
-    url: https://importai.substack.com/feed
+    url: https://jack-clark.net/feed/   # author's own site; substack.com refuses cloud servers (D19)
     lookback_days: 14
-  - name: Epoch AI
-    group: Analysis
-    url: https://epochai.substack.com/feed
-    lookback_days: 14
-    stale_after_days: 45
 
   # Product practice
   - name: SVPG (Marty Cagan)
@@ -99,10 +94,11 @@ sources:
     keywords: [AI, agentic, generative, gen AI, artificial intelligence, automation]
 
   # Policy
-  - name: EU AI Act Newsletter
+  - name: EU AI Act explainers (artificialintelligenceact.eu)
     group: Policy
-    url: https://artificialintelligenceact.substack.com/feed
-    lookback_days: 14
+    url: https://artificialintelligenceact.eu/feed/   # publisher's own site (D19)
+    lookback_days: 30                   # in-depth explainers, about monthly
+    stale_after_days: 120
 
   # Research
   - name: Carnegie Mellon ML blog

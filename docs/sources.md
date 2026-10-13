@@ -6,7 +6,7 @@ The sources the agent reads each week, how it reads each one, and why others wer
 
 **Audience** (decided 13 Oct 2026, [D18](decisions.md)): hiring managers for AI roles, teams adopting AI, and business analysts and product owners. AI researchers and engineers aren't the target, so sources written mainly for them are kept in reserve.
 
-## Active sources (15)
+## Active sources (14)
 
 Each group contributes at most a set number of items per run (`group_caps` in config), so the pool leans towards the groups that suit the audience. ✅ = feed checked and working on the date shown.
 
@@ -20,15 +20,16 @@ Each group contributes at most a set number of items per run (`group_caps` in co
 | | AI Incident Database (max 5) | https://incidentdatabase.ai/rss.xml | ✅ 10 Oct |
 | Analysis (10) | One Useful Thing (Ethan Mollick, Wharton) | https://www.oneusefulthing.org/feed | ✅ 13 Oct, full text in feed |
 | | AI as Normal Technology (Princeton) | https://www.normaltech.ai/feed | ✅ 13 Oct, full text in feed |
-| | Import AI (weekly) | https://importai.substack.com/feed | ✅ 13 Oct, full text in feed |
-| | Epoch AI | https://epochai.substack.com/feed | ✅ 13 Oct, full text in feed |
+| | Import AI (weekly), from the author's own site | https://jack-clark.net/feed/ | ✅ 13 Oct, full text in feed ([D19](decisions.md)) |
 | Product practice (8) | SVPG (Marty Cagan): product roles and AI | https://www.svpg.com/feed/ | ✅ 13 Oct, excerpts in feed |
 | | The Product Compass: hands-on AI and product management | https://www.productcompass.pm/feed | ✅ 13 Oct, full text in feed |
 | Enterprise (5) | McKinsey Insights, filtered to AI articles | https://www.mckinsey.com/insights/rss | ✅ 13 Oct, excerpts in feed |
-| Policy (4) | EU AI Act Newsletter | https://artificialintelligenceact.substack.com/feed | ✅ 13 Oct, full text in feed |
+| Policy (4) | EU AI Act explainers, from the publisher's own site (about monthly) | https://artificialintelligenceact.eu/feed/ | ✅ 13 Oct ([D19](decisions.md)) |
 | Research (3) | Carnegie Mellon ML blog (about monthly) | https://blog.ml.cmu.edu/feed/ | ✅ 10 Oct |
 
-Newsletters post every 1 to 2 weeks, so they use a 14-day window instead of the default 7 days.
+Newsletters post every 1 to 2 weeks, so they use a 14-day window instead of the default 7 days. The EU AI Act explainers use 30 days.
+
+**Substack addresses:** feeds at `*.substack.com` refuse requests from cloud servers such as Codespaces and GitHub Actions (403, checked 13 Oct 2026). Newsletters on Substack but with their own web address work. Use the publisher's own site where one exists ([D19](decisions.md)).
 
 ## In reserve
 
@@ -36,6 +37,8 @@ Approved on 10 Oct 2026 but not active, either because they're written mainly fo
 
 | Source | Address | Reason not active |
 |---|---|---|
+| Epoch AI | https://epochai.substack.com/feed | Its substack.com feed refuses cloud servers and no other address was found; mostly chips and compute, a weak fit for the audience |
+| EU AI Act Newsletter (weekly issues) | https://artificialintelligenceact.substack.com/feed | Refuses cloud servers; the publisher's explainers feed is used instead |
 | Anthropic news | https://www.anthropic.com/news | No feed; needs a page reader |
 | Stanford HAI | https://hai.stanford.edu/news | No feed; needs a page reader. Strong fit for the audience, so first in line |
 | OWASP GenAI Security Project | https://genai.owasp.org | No feed; its standards are in the [reference library](reference-library.md) |

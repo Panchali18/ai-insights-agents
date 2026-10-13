@@ -38,7 +38,8 @@ Everything about how this project was built, in one place. The agent reads this 
 | 27 | 2026-10-13 | Reviewed run 26 | The draft was better (claims attributed, opinion marked) but rejected for minor style points. Bigger issue: the topic was a social media post, and most of the pool was vendor marketing, raw incident reports and engineer discussion | D18 |
 | 28 | 2026-10-13 | Defined the audience | Hiring managers for AI roles, teams adopting AI, and BA and product peers. Not AI builders | D18 |
 | 29 | 2026-10-13 | Reworked the source pool | Checked 11 more feeds; added 7 (analysis, product practice, enterprise, policy); excluded 4 with reasons; capped each group; ranking now scores for the audience | D18 |
-| 30 | 2026-10-13 | Dry run with the new pool | Pending | — |
+| 30 | 2026-10-13 | Dry run with the new pool from the codespace | 22 items. The new business sources came through, but the 3 feeds on substack.com addresses were refused with 403 | D19 |
+| 31 | 2026-10-13 | Moved Import AI and EU AI Act to the publishers' own sites; Epoch AI to reserve | Pending a second dry run | D19 |
 
 ---
 
@@ -255,6 +256,19 @@ Everything about how this project was built, in one place. The agent reads this 
 **Alternatives considered:** Keeping the pool and tightening ranking only (it can't pick what isn't there); adding many more sources (more noise without caps); a Dynamics 365 group (deferred by the author).
 
 **Consequence:** Newsletters post every 1 to 2 weeks, so they use a 14-day window. Many include the whole article in the feed, which the agent now uses when a page can't be read. 11 approved sources are in reserve, mostly written for AI builders. Stanford HAI is first in line once a page reader exists. Resolves open questions 2 and 8 in the requirements.
+
+---
+
+## D19 · Use publishers' own sites when substack.com refuses cloud servers
+**Date:** 2026-10-13 · **Phase:** 2
+
+**Decision:** Import AI is read from the author's own site (`jack-clark.net/feed/`). The EU AI Act source switches to the publisher's own site (`artificialintelligenceact.eu/feed/`), which carries in-depth explainers about monthly instead of the weekly newsletter. Epoch AI moves to reserve.
+
+**Why:** In the first dry run from the codespace, all 3 feeds on `*.substack.com` addresses returned 403 Forbidden, while 2 Substack newsletters on their own domains worked and the same 3 feeds opened from another network. Substack appears to refuse automated requests from cloud servers to its own addresses. GitHub Actions also runs on cloud servers, so the weekly automation would hit the same block.
+
+**Alternatives considered:** Sending a browser-like user agent to get past the block (rejected: it works around the site's own rule, against the handling rules in sources.md); a third-party feed proxy (another dependency that can fail).
+
+**Consequence:** The weekly EU AI Act newsletter is lost, but the explainers suit practical posts. Future Substack sources need a check for a non-substack.com address first.
 
 ---
 
