@@ -34,7 +34,7 @@ Everything about how this project was built, in one place. The agent reads this 
 | 23 | 2026-10-13 | Made the critic stricter on framing and sources, and made the agent skip topics it can't read | Replaying run 21's draft: a lenient critic is now overruled and the draft is sent back | D15 |
 | 24 | 2026-10-13 | Turned the author's writing rules into a style guide, with a code-level check | Run 21's draft fails on "highlights" and "serve as" | D16 |
 | 25 | 2026-10-13 | Moved ranking to Flash-Lite | Pending a real run to measure the time saved | D17 |
-| 26 | 2026-10-13 | Real run with the stricter critic | Pending | — |
+| 26 | 2026-10-13 | Real run with the stricter critic | Ranking took 30 seconds on Flash-Lite (was 319). Topic: "The gap in shared understanding of LLM capability is widening", read as a social media post. The first draft call hit a 503 and the fallback model wrote it. The critic rejected the draft after 1 revision | D14, D15, D17 |
 
 ---
 
