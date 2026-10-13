@@ -1,6 +1,6 @@
 # Requirements: AI Insights Agent
 
-**Status:** Draft v0.3 · **Owner:** Panchali Das · **Last updated:** 2026-10-10
+**Status:** Draft v0.4 · **Owner:** Panchali Das · **Last updated:** 2026-10-10
 
 ## 1. Purpose
 
@@ -29,12 +29,17 @@ Posts are balanced across four content pillars (Epic 9), so that the author's pr
 
 | # | Criterion | Test |
 |---|---|---|
-| Q1 | One clear takeaway | The takeaway can be stated in one sentence |
-| Q2 | Specific | Names a concrete problem, example, number or trade-off |
-| Q3 | Point of view | Takes a position someone could disagree with |
-| Q4 | Grounded | Every factual claim links to a fetched source |
-| Q5 | Connected to the author | Draws on the author's real work or view, supplied by the author |
-| Q6 | No filler | No hype words, clichéd openers, emoji walls or engagement bait |
+The author posts as a learner sharing what she's figuring out, not as an expert (decision D20). Major criteria block a draft; the minor one is listed as quick fixes (D21).
+
+| # | Criterion | Severity | Test |
+|---|---|---|---|
+| Q1 | One clear takeaway | Major | The reader can say in one sentence what the author learned |
+| Q2 | Specific | Major | Names a concrete number, example, constraint or trade-off |
+| Q3 | Learner's takeaway | Major | Says what the author learned, tried, got wrong or is still working out, in the first person; gives no advice to readers |
+| Q4 | Grounded and fair | Major | Every factual claim is in the source or the build log; inferences are framed as the author's impression; criticism of named companies is attributed |
+| Q5 | Postable as written | Major | No placeholders; nothing about the author that isn't in the author notes or build log |
+| Q6 | Style | Minor | Follows the style guide (`prompts/style-guide.md`) |
+| Q7 | Holds for the reader | Major | Anything implied about how AI works, costs or behaves holds for the target audiences |
 
 ## 4. User stories and acceptance criteria
 
@@ -63,7 +68,7 @@ Posts are balanced across four content pillars (Epic 9), so that the author's pr
 
 **US-2.1** As the author, I want items ranked by relevance and value, so that I only see topics worth writing about.
 - AC1: Each item is scored on recency, momentum (number of sources covering it) and relevance to the defined topic areas.
-- AC2: The top-ranked item goes forward to drafting. The number of drafts per run is a configuration setting (default: 1), to be raised after testing.
+- AC2: The top-ranked readable items go forward as pitches (US-3.3). The number of pitches per run is a configuration setting (default: 3).
 - AC3: The score and a one-line reason are shown for each selected item.
 
 ### Epic 3: Drafting
@@ -73,25 +78,30 @@ Posts are balanced across four content pillars (Epic 9), so that the author's pr
 - AC2: Each draft is within a set length (default: 150–300 words).
 - AC3: Drafts follow the author's style guide once it exists.
 
-**US-3.2** As the author, I want two angle options for strong topics, so that I can choose the one that fits.
-- AC1: Angles are labelled (for example, *opinion*, *lesson learned*, *practical how-to*).
+**US-3.2** ~~As the author, I want two angle options for strong topics.~~ Replaced by US-3.3.
+
+**US-3.3** As the author, I want short pitches to choose from before anything is drafted, so that I only spend time on posts I'd want to publish.
+- AC1: Each run produces up to 3 pitches, each with the idea in one sentence, why readers would care, how it connects to my work, an angle (tried it / read and learned / got it wrong at first / still working it out), a possible first line and a fit score.
+- AC2: A connection to my work quotes the build log or author notes, or says "None".
+- AC3: Only the pitch I choose is drafted (`--draft N`). Choosing none is a normal outcome.
 
 ### Epic 4: Quality gate
 
 **US-4.1** As the author, I want every draft checked against the quality bar before I see it, so that weak drafts never reach me.
-- AC1: A separate critic step scores each draft against Q1–Q6.
-- AC2: A draft failing any criterion is revised once, then rejected if it still fails.
-- AC3: Rejected drafts are listed with the reason for rejection.
+- AC1: A separate critic step scores each draft against Q1–Q7.
+- AC2: A draft failing any major criterion, or with an unsupported claim, is revised once, then rejected if it still fails.
+- AC3: Minor (style) findings never block a draft; they're listed as quick fixes.
+- AC4: Rejected drafts are listed with the reason for rejection.
 
 **US-4.2** As the author, I want every factual claim checked against its source, so that I never post something false.
 - AC1: Every claim in a draft is linked to a source the agent actually fetched.
-- AC2: A claim that the source doesn't support is removed or turned into a question for the author.
+- AC2: A claim that the source doesn't support is removed, or listed under **Before posting** for the author to check.
 
 ### Epic 5: Human in the loop
 
 **US-5.1** As the author, I want the agent to ask me rather than guess, so that nothing invented reaches a post.
-- AC1: The drafts file has a **Questions for you** section, with each question linked to its draft.
-- AC2: A draft with unresolved questions is marked **Needs your input**.
+- AC1: Every draft is postable as written. Facts that must be verified are listed under **Before posting**; ideas for personal touches are listed under **Optional: make it more personal**.
+- AC2: A draft with items under Before posting is marked **Check before posting**. Otherwise it's **Ready to post**, or **Ready to post after quick fixes**.
 - AC3: No draft contains an invented personal experience, an unverified claim or a guessed fact.
 
 **US-5.2** As the author, I want my edits and decisions to improve future drafts.

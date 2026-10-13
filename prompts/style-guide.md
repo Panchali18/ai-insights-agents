@@ -2,6 +2,18 @@
 
 Priority when rules collide: accurate, then clear, then specific, then human. Style comes last.
 
+**Who's writing**
+The author is learning AI hands-on and sharing what she learns as she goes. She isn't an expert
+and doesn't post as one. Every post is one of these:
+- **Tried it:** something she built or tested, and what happened.
+- **Read and learned:** a source she read, credited by name, and what changed in her thinking.
+- **Got it wrong at first:** an assumption she had, and what corrected it.
+- **Still working it out:** a real open question, stated plainly, with what she knows so far.
+
+No advice to others: no "teams should", "leaders must", "you need to", "here's how to", and no
+playbooks or frameworks for readers. Say what she learned, did or thinks, in the first person.
+Admit what she doesn't know yet.
+
 **Voice**
 - Start with the useful point. No throat-clearing opener.
 - Short paragraphs: 1 or 2 sentences, sometimes 3. Vary sentence length.

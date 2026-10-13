@@ -2,15 +2,16 @@
 
 Research-to-post AI agent that turns AI news and real practitioner pain points into well-sourced LinkedIn drafts, using a self-critique quality gate, cited claims and a human approval step. No generic AI content.
 
-> **Status: in development.** Phase 1 (collect → rank → draft) works. Phase 2's critic-and-revise loop has had one real run; stricter framing, source and style checks were added after reviewing it, and are tested with sample data. Voice, content pillars and evaluation come later; see the [delivery phases](docs/requirements.md#8-delivery-phases).
+> **Status: in development.** Collecting, ranking and the critic-and-revise loop have run for real. The pitch-then-draft flow and the learner-voice quality bar are built and tested with sample data; their first real run is pending. Voice, content pillars and evaluation come later; see the [delivery phases](docs/requirements.md#8-delivery-phases).
 
 ## How it works
 
 1. **Collect:** reads recent items from an approved list of sources ([docs/sources.md](docs/sources.md)). A failing source is logged and skipped, never fatal.
-2. **Rank:** the model labels each item as *News* or *Pain point* and scores it on recency, momentum and relevance, then the top item is chosen.
-3. **Draft:** the agent reads the source page and records honestly what it got (full article, social media post, or only the feed summary). If the page is blocked and there's only a headline, it skips to the next-ranked topic. It then drafts a post against a six-point quality bar and the author's style guide. Anything it can't verify, or that needs the author's own experience, becomes a question for the author instead of a guess.
-4. **Critique and revise:** a separate model call reviews the draft against the quality bar, checks each claim against the source and whether interpretations are presented as opinion, and flags single-source and social media sourcing. Plain code checks the clear-cut style rules (banned words, em dashes, "not X, but Y" reframes) and overrules the critic if it finds any. The review decides what happens next: pass, revise once, or reject. The code reads the critic's findings rather than trusting its stated verdict.
-5. **Save:** one dated Markdown file in `drafts/`, with each draft's status, scores, sources, the critic's review and a run summary.
+2. **Rank:** a lighter model scores each item for the target readers (hiring managers for AI roles, teams adopting AI, analysts and product owners).
+3. **Read:** the agent reads each top topic's source and records honestly what it got (full article, social media post, or feed summary). Topics it can't read properly are skipped.
+4. **Pitch:** it writes 3 one-line pitches, each linked where possible to the author's own build log, with an angle and a fit score. The author picks one, or none.
+5. **Draft:** `--draft N` writes the chosen pitch in the author's voice: a learner sharing what she tried, read, got wrong or is still working out. The draft is postable as written; facts to check and optional personal touches are listed separately.
+6. **Critique and revise:** a separate model call checks 7 criteria. Major problems (wrong or unfair claims, advice that doesn't hold for readers, an expert's voice, gaps to fill) send the draft back once, then reject it. Minor style points are listed as quick fixes. Plain code catches clear-cut style breaks and placeholders, and the code decides from the critic's findings rather than its stated verdict.
 
 The agent cannot post anywhere. A human reviews every draft.
 
@@ -39,7 +40,8 @@ Requires a free Gemini API key from Google AI Studio, stored as a Codespaces sec
 ```bash
 pip install -r requirements.txt
 python -m agent.main --dry-run   # check the sources only; no model calls
-python -m agent.main             # full run; writes drafts/<date>.md
+python -m agent.main             # pitches; writes drafts/<date>-pitches.md
+python -m agent.main --draft 2   # draft pitch 2; writes drafts/<date>-draft.md
 ```
 
 ## Documentation

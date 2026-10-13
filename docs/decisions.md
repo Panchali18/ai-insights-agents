@@ -41,6 +41,11 @@ Everything about how this project was built, in one place. The agent reads this 
 | 30 | 2026-10-13 | Dry run with the new pool from the codespace | 22 items. The new business sources came through, but the 3 feeds on substack.com addresses were refused with 403 | D19 |
 | 31 | 2026-10-13 | Moved Import AI and EU AI Act to the publishers' own sites; Epoch AI to reserve | Second dry run clean: 14 sources, no failures, 24 items. 10 of the 24 now come from analysis, product practice and enterprise sources, up from none | D19 |
 | 32 | 2026-10-13 | Full run with the new pool | Picked "Stop Overpaying for Your AI Subscription" from The Product Compass, a cost topic relevant to teams adopting AI. Passed first time in 3 calls. On human review, one paragraph applied the advice to product teams' agents, where consumer subscriptions generally don't apply; the critic didn't check whether advice holds for the audience | — |
+| 33 | 2026-10-13 | Asked whether she'd want to post run 32's draft | No: accurate and relevant, but someone else's finding with no stake of hers, written like expert advice | D20 |
+| 34 | 2026-10-13 | Set the voice: a learner sharing what she's figuring out | Style guide, quality bar and prompts rewritten for 4 post types; advice to readers now fails Q3 | D20 |
+| 35 | 2026-10-13 | Added pitches before drafting, connected to the build log | Runs now produce 3 one-line pitches; only the chosen one is drafted | D20 |
+| 36 | 2026-10-13 | Split critic findings into major and minor; made drafts postable; added a "holds for the reader" check | Tested with sample data, including run 32's case | D21 |
+| 37 | 2026-10-13 | First real run of pitches and drafting | Pending | — |
 
 ---
 
@@ -273,9 +278,33 @@ Everything about how this project was built, in one place. The agent reads this 
 
 ---
 
+## D20 · Post as a learner, and choose from pitches before drafting
+**Date:** 2026-10-13 · **Phase:** 2
+
+**Decision:** The author posts as someone learning AI hands-on, never as an expert. Every post is one of 4 types: tried it, read and learned, got it wrong at first, still working it out. Advice to readers ("teams should", "here's how to") fails Q3 and is caught in code where the phrasing is clear-cut. Each run now ends with 3 short pitches: the idea, why readers would care, how it connects to her work (quoting the build log, or "None"), an angle, a first line and a fit score. Only the chosen pitch is drafted, with `--draft N`. The drafter and critic see `prompts/author.md` and the most recent build log steps, which are the only facts about her they may use.
+
+**Why:** Run 32's draft was accurate and on-topic, but the author wouldn't have posted it: it was someone else's finding with no stake of hers, written in an expert's voice she doesn't want. Whether she'd post something depends on her positioning and opinion, which the agent can't judge alone, and a pitch is faster to judge than a 250-word draft.
+
+**Alternatives considered:** Several full drafts per run (more model calls, more to read); a "thought leadership" voice (doesn't match how the author wants to be seen, and reads like the AI content she wants to avoid).
+
+**Consequence:** A run has 2 steps and the author's choice in between, so weekly automation will produce pitches, not posts. Pitches link news to her real build work, which gives drafts something only she could write. A feedback log, so the agent learns which pitches she picks, is a natural next step (US-5.2).
+
+---
+
+## D21 · Major issues block a draft, minor ones don't, and every draft is postable
+**Date:** 2026-10-13 · **Phase:** 2
+
+**Decision:** Critic findings are split by severity. Major (Q1 to Q5 and the new Q7) send a draft back and reject it if they remain. Minor (Q6 style) are listed as quick fixes and never block; if a draft has only minor findings, it isn't revised at all. Q7 checks that anything the post implies about how AI works, costs or behaves holds for the target readers. Drafts have no placeholders: facts to verify go under "Before posting", and personal touches under "Optional: make it more personal". Statuses: Ready to post, Ready to post after quick fixes, Check before posting, Rejected.
+
+**Why:** Run 26's draft was rejected over a long paragraph and "four" instead of "4". Run 32's passed although one paragraph applied a finding about individual users to companies' products. Placeholders and open questions made every draft wait on the author.
+
+**Consequence:** A clean draft costs 2 model calls instead of 4. Clear-cut style breaks are still found by code and shown, but no longer reject a draft. A placeholder in the post is now caught by code as a major failure.
+
+---
+
 ## Open issues
 
-- **Quality gate and content direction changes agreed on 13 Oct 2026, not yet made:** split critic findings into major (block) and minor (list as quick fixes); make every draft postable as written, with personal touches as optional suggestions and "must check" questions only for unverified facts; full drafts from the build logs of both projects; news and research as short briefs where the author picks an angle.
+- **Still to do from 13 Oct 2026:** a feedback log, so the agent learns which pitches the author picks and why (US-5.2); pitches drawn purely from the build log, with no news item; reading the JD Analyzer's build log too (agreed, needs access to that repo).
 
 - **The critic passed a draft it should have flagged** (run 21). Fixes made on 13 Oct 2026 (D15, D16, D17); confirm with a real run.
 

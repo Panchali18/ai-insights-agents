@@ -21,6 +21,10 @@ BANNED_PHRASES = (
     "furthermore", "moreover", "additionally", "that said", "that being said", "moving forward",
     "at the end of the day", "let that sink in", "read that again", "paving the way",
     "a pivotal moment", "broader implications", "in other words",
+    # Advice to readers, which doesn't fit a learner's voice
+    "teams should", "teams must", "leaders should", "leaders must", "companies should",
+    "organisations should", "organizations should", "you need to", "here's how to",
+    "here is how to", "the playbook",
 )
 
 # "It's not X, it's Y" and its relatives. Kept narrow to avoid flagging ordinary sentences.
